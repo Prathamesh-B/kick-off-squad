@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  name        String
+  skill_level String
+  position    String
+  email       String?  // Optional for communication
+  teamPlayers TeamPlayer[]
+  teams       Team[]   @relation("CaptainTeams")
+}
+
+model Match {
+  id             Int       @id @default(autoincrement())
+  date           DateTime
+  team1_score    Int
+  team2_score    Int
+  status         String
+  result         String
+  teams          Team[]
+  matchResults   MatchResult[]
+}
+
+model Team {
+  id        Int        @id @default(autoincrement())
+  match_id  Int
+  name      String
+  captain_id Int
+  match     Match      @relation(fields: [match_id], references: [id])
+  captain   User       @relation("CaptainTeams", fields: [captain_id], references: [id])
+  teamPlayers TeamPlayer[]
+  matchResults MatchResult[]
+}
+
+model TeamPlayer {
+  id        Int    @id @default(autoincrement())
+  team_id   Int
+  player_id Int
+  is_starter Boolean
+  team      Team   @relation(fields: [team_id], references: [id])
+  player    User   @relation(fields: [player_id], references: [id])
+}
+
+model MatchResult {
+  id        Int    @id @default(autoincrement())
+  match_id  Int
+  team_id   Int
+  goals     Int
+  notes     String?
+  match     Match   @relation(fields: [match_id], references: [id])
+  team      Team    @relation(fields: [team_id], references: [id])
+}
