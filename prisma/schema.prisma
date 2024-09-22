@@ -1,65 +1,71 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  name        String
-  skill_level String
-  position    String
-  email       String?  // Optional for communication
-  teamPlayers TeamPlayer[]
-  teams       Team[]   @relation("CaptainTeams")
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  skills        Skill?
+  events        Event[]
+  registrations Registration[]
 }
 
-model Match {
-  id             Int       @id @default(autoincrement())
-  date           DateTime
-  team1_score    Int
-  team2_score    Int
-  status         String
-  result         String
-  teams          Team[]
-  matchResults   MatchResult[]
+model Skill {
+  id          Int     @id @default(autoincrement())
+  userId      Int     @unique
+  user        User    @relation(fields: [userId], references: [id])
+  passing     Int
+  shooting    Int
+  teamwork    Int
+  defending   Int
+  positioning Int
+  position    String?
 }
 
-model Team {
-  id        Int        @id @default(autoincrement())
-  match_id  Int
-  name      String
-  captain_id Int
-  match     Match      @relation(fields: [match_id], references: [id])
-  captain   User       @relation("CaptainTeams", fields: [captain_id], references: [id])
-  teamPlayers TeamPlayer[]
-  matchResults MatchResult[]
+model Event {
+  id            Int            @id @default(autoincrement())
+  name          String
+  date          DateTime
+  time          String
+  location      String
+  type          String
+  maxPlayers    Int
+  description   String?
+  creatorId     Int
+  creator       User           @relation(fields: [creatorId], references: [id])
+  registrations Registration[]
+  result        Result?
 }
 
-model TeamPlayer {
-  id        Int    @id @default(autoincrement())
-  team_id   Int
-  player_id Int
-  is_starter Boolean
-  team      Team   @relation(fields: [team_id], references: [id])
-  player    User   @relation(fields: [player_id], references: [id])
+model Result {
+  id         Int   @id @default(autoincrement())
+  eventId    Int   @unique
+  event      Event @relation(fields: [eventId], references: [id])
+  team1Score Int
+  team2Score Int
 }
 
-model MatchResult {
-  id        Int    @id @default(autoincrement())
-  match_id  Int
-  team_id   Int
-  goals     Int
-  notes     String?
-  match     Match   @relation(fields: [match_id], references: [id])
-  team      Team    @relation(fields: [team_id], references: [id])
+model Registration {
+  id        Int                @id @default(autoincrement())
+  userId    Int
+  eventId   Int
+  user      User               @relation(fields: [userId], references: [id])
+  event     Event              @relation(fields: [eventId], references: [id])
+  createdAt DateTime           @default(now())
+  status    RegistrationStatus @default(REGISTERED)
+  team      Int?
+}
+
+enum RegistrationStatus {
+  REGISTERED
+  WAITLISTED
+  CANCELLED
 }
