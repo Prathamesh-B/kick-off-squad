@@ -43,9 +43,7 @@ export default function Component() {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await fetch("/api/event", {
-                    cache: "no-cache"
-                });
+                const response = await fetch("/api/event", { cache: 'no-store' });
                 console.log(response);
                 if (!response.ok) throw new Error("Network response was not ok");
                 const data = await response.json();
