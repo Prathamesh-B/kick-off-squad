@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma'; // Adjust the import path if necessary
+import prisma from '@/lib/prisma';
 
 export async function GET() {
     try {
@@ -9,11 +9,11 @@ export async function GET() {
                 },
             },
             include: {
-                registrations: true, // Include registrations
-                creator: true, // Include the creator
+                registrations: true,
+                creator: true,
             },
             orderBy: {
-                date: 'asc', // Order by date
+                date: 'asc',
             },
         });
 

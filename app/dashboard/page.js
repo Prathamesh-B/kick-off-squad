@@ -43,7 +43,10 @@ export default function Component() {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await fetch("/api/event");
+                const response = await fetch("/api/event", {
+                    cache: "no-cache"
+                });
+                console.log(response);
                 if (!response.ok) throw new Error("Network response was not ok");
                 const data = await response.json();
                 setEvents(data);
@@ -53,7 +56,6 @@ export default function Component() {
                 setLoading(false);
             }
         };
-
         fetchEvents();
     }, []);
 
