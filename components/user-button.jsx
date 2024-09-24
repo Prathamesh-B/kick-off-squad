@@ -42,9 +42,9 @@ export default function UserButton({ user }) {
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                        <Link href="/create-event">
+                        <Link href="/events">
                             <Calendar className="mr-2 h-4 w-4" />
-                            <span>Create Event</span>
+                            <span>Manage Event</span>
                         </Link>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>

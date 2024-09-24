@@ -5,9 +5,9 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 justify-center">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-black">
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-hero-img bg-cover bg-fixed bg-bottom md:bg-center">
           <div className="px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
+            <div className="flex flex-col items-center space-y-4 text-center bg-black/50 py-6 md:py-12 rounded-md">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none text-white">
                   Welcome to Kick-Off Squad
