@@ -41,7 +41,11 @@ export default function Component() {
                                     className="w-full"
                                 />
                                 <div className="flex justify-between text-xs text-gray-500">
+                                    <span>0</span>
                                     <span>1</span>
+                                    <span>2</span>
+                                    <span>3</span>
+                                    <span>4</span>
                                     <span>5</span>
                                 </div>
                             </div>
@@ -55,7 +59,11 @@ export default function Component() {
                                     className="w-full"
                                 />
                                 <div className="flex justify-between text-xs text-gray-500">
+                                    <span>0</span>
                                     <span>1</span>
+                                    <span>2</span>
+                                    <span>3</span>
+                                    <span>4</span>
                                     <span>5</span>
                                 </div>
                             </div>
@@ -69,7 +77,11 @@ export default function Component() {
                                     className="w-full"
                                 />
                                 <div className="flex justify-between text-xs text-gray-500">
+                                    <span>0</span>
                                     <span>1</span>
+                                    <span>2</span>
+                                    <span>3</span>
+                                    <span>4</span>
                                     <span>5</span>
                                 </div>
                             </div>
@@ -83,7 +95,11 @@ export default function Component() {
                                     className="w-full"
                                 />
                                 <div className="flex justify-between text-xs text-gray-500">
+                                    <span>0</span>
                                     <span>1</span>
+                                    <span>2</span>
+                                    <span>3</span>
+                                    <span>4</span>
                                     <span>5</span>
                                 </div>
                             </div>
@@ -97,7 +113,11 @@ export default function Component() {
                                     className="w-full"
                                 />
                                 <div className="flex justify-between text-xs text-gray-500">
+                                    <span>0</span>
                                     <span>1</span>
+                                    <span>2</span>
+                                    <span>3</span>
+                                    <span>4</span>
                                     <span>5</span>
                                 </div>
                             </div>

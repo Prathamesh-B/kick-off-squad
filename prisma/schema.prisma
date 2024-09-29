@@ -21,7 +21,7 @@ model User {
 model Skill {
   id          Int     @id @default(autoincrement())
   userId      Int     @unique
-  user        User    @relation(fields: [userId], references: [id])
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   passing     Int
   shooting    Int
   teamwork    Int
@@ -40,7 +40,7 @@ model Event {
   maxPlayers    Int
   description   String?
   creatorId     Int
-  creator       User           @relation(fields: [creatorId], references: [id])
+  creator       User           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   registrations Registration[]
   result        Result?
 }
@@ -48,7 +48,7 @@ model Event {
 model Result {
   id         Int   @id @default(autoincrement())
   eventId    Int   @unique
-  event      Event @relation(fields: [eventId], references: [id])
+  event      Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
   team1Score Int
   team2Score Int
 }
@@ -57,8 +57,8 @@ model Registration {
   id        Int                @id @default(autoincrement())
   userId    Int
   eventId   Int
-  user      User               @relation(fields: [userId], references: [id])
-  event     Event              @relation(fields: [eventId], references: [id])
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event     Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
   createdAt DateTime           @default(now())
   status    RegistrationStatus @default(REGISTERED)
   team      Int?
