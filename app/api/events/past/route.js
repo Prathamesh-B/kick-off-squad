@@ -2,12 +2,11 @@ import prisma from '@/lib/prisma';
 
 export async function GET() {
     try {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const today = new Date().toISOString();
 
         const pastEvents = await prisma.event.findMany({
             where: {
-                date: {
+                dateTime: {
                     lt: today,
                 },
             },
@@ -32,7 +31,7 @@ export async function GET() {
                 },
             },
             orderBy: {
-                date: 'desc',
+                dateTime: 'desc',
             },
         });
 
@@ -43,6 +42,7 @@ export async function GET() {
             },
         });
     } catch (error) {
+        console.error(error);
         return new Response(JSON.stringify({ error: 'Error fetching past events' }), {
             status: 500,
             headers: {

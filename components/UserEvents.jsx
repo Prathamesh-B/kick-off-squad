@@ -10,14 +10,12 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Edit } from "lucide-react";
-import { Trash } from "lucide-react";
+import { Calendar, MapPin, Users, Edit, Trash } from "lucide-react";
 import { toast } from "sonner";
 
 export default function UserEvents({ userId }) {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         fetchUserEvents();
@@ -28,79 +26,87 @@ export default function UserEvents({ userId }) {
             const response = await fetch(
                 `/api/events/manage?userId=${encodeURIComponent(userId)}`
             );
-            if (response.ok) {
-                const data = await response.json();
-                setEvents(data);
-            } else {
-                setError("Failed to fetch events");
-            }
+            if (!response.ok) throw new Error("Failed to fetch events");
+            const data = await response.json();
+            setEvents(data);
         } catch (error) {
-            setError("An unexpected error occurred");
+            console.error("Error fetching user events:", error);
+            toast.error("Failed to load your events");
         } finally {
             setLoading(false);
         }
     };
 
     const handleDelete = async (eventId) => {
-        if (confirm("Are you sure you want to delete this event?")) {
-            try {
-                const response = await fetch(`/api/events/manage/delete/${eventId}`, {
+        if (!confirm("Are you sure you want to delete this event?")) return;
+
+        try {
+            const response = await fetch(
+                `/api/events/manage/delete/${eventId}`,
+                {
                     method: "DELETE",
-                });
-                if (response.ok) {
-                    setEvents(events.filter((event) => event.id !== eventId));
-                } else {
-                    setError("Failed to delete event");
                 }
-            } catch (error) {
-                setError("An unexpected error occurred");
-            }
+            );
+            if (!response.ok) throw new Error("Failed to delete event");
+
+            setEvents(events.filter((event) => event.id !== eventId));
+            toast.success("Event deleted successfully");
+        } catch (error) {
+            console.error("Error deleting event:", error);
+            toast.error("Failed to delete event");
         }
     };
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+    if (loading) return <p>Loading your events...</p>;
 
     return (
-        <main className="px-4 md:px-6">
-            <div className="mx-auto space-y-2">
-                <h1 className="text-2xl font-bold">Your Events</h1>
-                <div className="grid gap-6 md:grid-cols-2">
-                    {events.map((event) => (
-                        <Card key={event.id}>
-                            <CardHeader>
-                                <CardTitle>{event.name}</CardTitle>
-                                <CardDescription>
-                                    {new Date(event.date).toLocaleDateString()}{" "}
-                                    | {event.time}
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <p>Location: {event.location}</p>
-                                <p>Type: {event.type}</p>
-                                <p>Max Players: {event.maxPlayers}</p>
-                                <p>Description: {event.description}</p>
-                            </CardContent>
-                            <CardFooter className="flex justify-between">
-                                <Button variant="outline">
-                                    <Edit
-                                        className="w-4 h-4 mr-2"
-                                        onClick={() => handleEdit(event.id)}
-                                    />
-                                    Edit
-                                </Button>
-                                <Button
-                                    variant="destructive"
-                                    onClick={() => handleDelete(event.id)}
-                                >
-                                    <Trash className="w-4 h-4 mr-2" />
-                                    Delete
-                                </Button>
-                            </CardFooter>
-                        </Card>
-                    ))}
-                </div>
-            </div>
-        </main>
+        <div className="grid gap-6 md:grid-cols-2">
+            {events.length === 0 ? (
+                <p>You haven&apos;t created any events yet.</p>
+            ) : (
+                events.map((event) => (
+                    <Card key={event.id}>
+                        <CardHeader>
+                            <CardTitle>{event.name}</CardTitle>
+                            <CardDescription>
+                                {event.description || "No description provided"}
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-center space-x-2 text-sm text-gray-500 mb-2">
+                                <Calendar className="h-4 w-4" />
+                                <span>
+                                    {new Date(event.dateTime).toLocaleString()}
+                                </span>
+                            </div>
+                            <div className="flex items-center space-x-2 text-sm text-gray-500 mb-2">
+                                <MapPin className="h-4 w-4" />
+                                <span>{event.location}</span>
+                            </div>
+                            <div className="flex items-center space-x-2 text-sm text-gray-500">
+                                <Users className="h-4 w-4" />
+                                <span>
+                                    {event.registrations?.length || 0}/
+                                    {event.maxPlayers} players registered
+                                </span>
+                            </div>
+                        </CardContent>
+                        <CardFooter className="flex justify-between">
+                            <Button variant="outline">
+                                <Edit className="w-4 h-4 mr-2" />
+                                Edit
+                            </Button>
+                            <Button
+                                variant="destructive"
+                                onClick={() => handleDelete(event.id)}
+                            >
+                                <Trash className="w-4 h-4 mr-2" />
+                                Delete
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                ))
+            )}
+        </div>
     );
 }

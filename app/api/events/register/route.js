@@ -25,7 +25,7 @@ export async function POST(request) {
             });
         }
 
-        if (event.date < new Date()) {
+        if (event.dateTime < new Date()) {
             return new Response(JSON.stringify({ error: 'Event has already happened' }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' },

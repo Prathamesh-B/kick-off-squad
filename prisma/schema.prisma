@@ -34,8 +34,7 @@ model Skill {
 model Event {
   id            Int            @id @default(autoincrement())
   name          String
-  date          DateTime
-  time          String
+  dateTime      DateTime
   location      String
   type          String
   maxPlayers    Int

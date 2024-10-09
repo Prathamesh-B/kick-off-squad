@@ -3,11 +3,10 @@ import prisma from '@/lib/prisma';
 export async function GET() {
     try {
         const today = new Date();
-        today.setHours(0, 0, 0, 0);
 
         const upcomingEvents = await prisma.event.findMany({
             where: {
-                date: {
+                dateTime: {
                     gte: today,
                 },
             },
