@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EventInfoPopover from "@/components/EventInfoPopover";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import { toast } from "sonner";
+import { PageLoader } from "@/components/PageLoader";
 
 const EventCard = ({ event, isPast, onRegistrationUpdate }) => {
     const { data: session } = useSession();
@@ -136,11 +137,13 @@ const EventsSection = ({ type }) => {
         );
     };
 
+    if (loading) {
+        return <PageLoader type="events" />
+    }
+
     return (
         <div className="grid gap-6 md:grid-cols-2">
-            {loading ? (
-                <p>Loading...</p>
-            ) : events.length === 0 ? (
+            {events.length === 0 ? (
                 <p>No {type} events found.</p>
             ) : (
                 events.map(event => (

@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from 'sonner'
+import { PageLoader } from "@/components/PageLoader"
 
 export default function Component() {
     const [user, setUser] = useState(null)
@@ -77,56 +78,7 @@ export default function Component() {
     }
 
     if (isPageLoading) {
-        return (
-            <div className="flex flex-col min-h-screen">
-                <main className="flex-1 py-6 px-4 md:px-6">
-                    <div className="max-w-2xl mx-auto space-y-8">
-                        <Skeleton className="h-10 w-48" />
-                        <Card>
-                            <CardHeader>
-                                <Skeleton className="h-7 w-40" />
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="space-y-2">
-                                    <Skeleton className="h-5 w-20" />
-                                    <Skeleton className="h-10 w-full" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Skeleton className="h-5 w-20" />
-                                    <Skeleton className="h-10 w-full" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader>
-                                <Skeleton className="h-7 w-40" />
-                                <Skeleton className="h-5 w-60" />
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                {[1, 2, 3, 4, 5].map((i) => (
-                                    <div key={i} className="space-y-2">
-                                        <Skeleton className="h-5 w-20" />
-                                        <Skeleton className="h-5 w-full" />
-                                        <div className="flex justify-between">
-                                            {[1, 2, 3, 4, 5, 6].map((j) => (
-                                                <Skeleton key={j} className="h-4 w-4" />
-                                            ))}
-                                        </div>
-                                    </div>
-                                ))}
-                                <div className="space-y-2">
-                                    <Skeleton className="h-5 w-32" />
-                                    <Skeleton className="h-10 w-full" />
-                                </div>
-                            </CardContent>
-                            <CardFooter>
-                                <Skeleton className="h-10 w-full" />
-                            </CardFooter>
-                        </Card>
-                    </div>
-                </main>
-            </div>
-        )
+        return <PageLoader type="profile" />
     }
 
     return (

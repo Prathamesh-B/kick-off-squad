@@ -10,6 +10,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { PageLoader } from "@/components/PageLoader";
 import { Calendar, MapPin, Users, Edit, Trash } from "lucide-react";
 import { toast } from "sonner";
 
@@ -57,7 +58,9 @@ export default function UserEvents({ userId }) {
         }
     };
 
-    if (loading) return <p>Loading your events...</p>;
+    if (loading) {
+        return <PageLoader type="events" />
+    }
 
     return (
         <div className="grid gap-6 md:grid-cols-2">
