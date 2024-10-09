@@ -1,6 +1,7 @@
 import { auth } from "@/auth"
 import prisma from '@/lib/prisma'
 
+// Delete an event
 export async function DELETE(req, { params }) {
     const session = await auth()
     if (!session) {

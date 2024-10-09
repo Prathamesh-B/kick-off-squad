@@ -1,10 +1,11 @@
 import prisma from '@/lib/prisma';
 
+// Create an event
 export async function POST(req) {
     try {
         const body = await req.json()
-        const { name, date, time, location, type, maxPlayers, description, creatorId } = body
-        console.log({ name, date, time, location, type, maxPlayers, description, creatorId })
+        const { name, date, time, location, type, maxPlayers, description, creatorEmail } = body
+        console.log({ name, date, time, location, type, maxPlayers, description, creatorEmail })
         const event = await prisma.event.create({
             data: {
                 name,
@@ -14,7 +15,7 @@ export async function POST(req) {
                 type,
                 maxPlayers: parseInt(maxPlayers),
                 description,
-                creatorId: parseInt(creatorId),
+                creatorEmail: creatorEmail,
             },
         })
 

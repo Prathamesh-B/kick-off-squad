@@ -25,7 +25,7 @@ export default function UserEvents({ userEmail }) {
     const fetchUserEvents = async () => {
         try {
             const response = await fetch(
-                `/api/events?userEmail=${encodeURIComponent(userEmail)}`
+                `/api/events/manage?userEmail=${encodeURIComponent(userEmail)}`
             );
             if (response.ok) {
                 const data = await response.json();
@@ -43,7 +43,7 @@ export default function UserEvents({ userEmail }) {
     const handleDelete = async (eventId) => {
         if (confirm("Are you sure you want to delete this event?")) {
             try {
-                const response = await fetch(`/api/events/${eventId}`, {
+                const response = await fetch(`/api/events/manage/delete/${eventId}`, {
                     method: "DELETE",
                 });
                 if (response.ok) {

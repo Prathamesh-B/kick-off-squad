@@ -39,8 +39,8 @@ model Event {
   type          String
   maxPlayers    Int
   description   String?
-  creatorId     Int
-  creator       User           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorEmail  String
+  creator       User           @relation(fields: [creatorEmail], references: [email], onDelete: Cascade)
   registrations Registration[]
   result        Result?
 }

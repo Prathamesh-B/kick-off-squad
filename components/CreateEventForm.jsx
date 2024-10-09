@@ -55,7 +55,7 @@ export default function CreateEventForm({ userEmail }) {
         setError(null);
 
         try {
-            const response = await fetch("/api/events", {
+            const response = await fetch("/api/events/manage/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
