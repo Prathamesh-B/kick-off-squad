@@ -23,10 +23,10 @@ export default function EventsPage() {
                             <TabsTrigger value="manage">Manage Events</TabsTrigger>
                         </TabsList>
                         <TabsContent value="create">
-                            <CreateEventForm userEmail={session.user.email} />
+                            <CreateEventForm userId={session.user.id} />
                         </TabsContent>
                         <TabsContent value="manage">
-                            <UserEvents userEmail={session.user.email} />
+                            <UserEvents userId={session.user.id} />
                         </TabsContent>
                     </Tabs>
                 </div>

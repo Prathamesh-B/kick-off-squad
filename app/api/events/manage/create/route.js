@@ -4,8 +4,8 @@ import prisma from '@/lib/prisma';
 export async function POST(req) {
     try {
         const body = await req.json()
-        const { name, date, time, location, type, maxPlayers, description, creatorEmail } = body
-        console.log({ name, date, time, location, type, maxPlayers, description, creatorEmail })
+        const { name, date, time, location, type, maxPlayers, description, creatorId } = body
+        console.log({ name, date, time, location, type, maxPlayers, description, creatorId })
         const event = await prisma.event.create({
             data: {
                 name,
@@ -15,7 +15,7 @@ export async function POST(req) {
                 type,
                 maxPlayers: parseInt(maxPlayers),
                 description,
-                creatorEmail: creatorEmail,
+                creatorId: creatorId,
             },
         })
 

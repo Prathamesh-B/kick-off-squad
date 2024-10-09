@@ -23,11 +23,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     }
                 } catch (error) {
                     console.error("Error checking or creating user: ", error);
-                    return false; // Stop sign-in process in case of error
+                    return false;
                 }
             }
-
-            return true; // Always return true unless you have a condition to block sign-in
+            return true;
         },
+        async session({ session, token }) {
+            const dbUser = await prisma.user.findUnique({
+                where: { email: session.user.email },
+                select: { id: true }
+            });
+
+            if (dbUser) {
+                session.user.id = dbUser.id;
+            }
+
+            return session;
+        },
+        async jwt({ token, user, account, profile }) {
+            if (user) {
+                const dbUser = await prisma.user.findUnique({
+                    where: { email: user.email },
+                    select: { id: true }
+                });
+                if (dbUser) {
+                    token.userId = dbUser.id;
+                }
+            }
+            return token;
+        }
     }
 })

@@ -21,8 +21,9 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
+import { toast } from "sonner";
 
-export default function CreateEventForm({ userEmail }) {
+export default function CreateEventForm({ userId }) {
     const [formData, setFormData] = useState({
         name: "",
         date: "",
@@ -63,13 +64,13 @@ export default function CreateEventForm({ userEmail }) {
                 body: JSON.stringify({
                     ...formData,
                     maxPlayers: parseInt(formData.maxPlayers),
-                    creatorEmail: userEmail,
+                    creatorId: userId,
                 }),
             });
 
             if (response.ok) {
                 const event = await response.json();
-                alert("Event created successfully!");
+                toast.success(`Successfully created event: ${event.name}`);
                 setFormData({
                     name: "",
                     date: "",

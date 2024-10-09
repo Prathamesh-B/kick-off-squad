@@ -9,11 +9,15 @@ export async function GET(req) {
     }
 
     const { searchParams } = new URL(req.url)
-    const userEmail = searchParams.get('userEmail')
+    const userId = searchParams.get('userId')
+
+    if (!userId) {
+        return new Response(JSON.stringify({ error: 'Missing userId parameter' }), { status: 400 })
+    }
 
     try {
         const events = await prisma.event.findMany({
-            where: { creatorEmail: userEmail },
+            where: { creatorId: parseInt(userId) },
         })
         return new Response(JSON.stringify(events), { status: 200 })
     } catch (error) {

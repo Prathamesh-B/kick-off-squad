@@ -12,20 +12,21 @@ import {
 } from "@/components/ui/card";
 import { Edit } from "lucide-react";
 import { Trash } from "lucide-react";
+import { toast } from "sonner";
 
-export default function UserEvents({ userEmail }) {
+export default function UserEvents({ userId }) {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         fetchUserEvents();
-    }, [userEmail]);
+    }, [userId]);
 
     const fetchUserEvents = async () => {
         try {
             const response = await fetch(
-                `/api/events/manage?userEmail=${encodeURIComponent(userEmail)}`
+                `/api/events/manage?userId=${encodeURIComponent(userId)}`
             );
             if (response.ok) {
                 const data = await response.json();
