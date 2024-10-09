@@ -35,6 +35,7 @@ const EventCard = ({ event, isPast, onRegistrationUpdate }) => {
                 body: JSON.stringify({
                     eventId: event.id,
                 }),
+                cache: 'no-store',
             });
 
             if (!response.ok) {

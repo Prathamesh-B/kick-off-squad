@@ -12,11 +12,13 @@ import {
 } from "@/components/ui/card";
 import { PageLoader } from "@/components/PageLoader";
 import { Calendar, MapPin, Users, Edit, Trash } from "lucide-react";
+import EditEventForm from "./EditEventForm";
 import { toast } from "sonner";
 
 export default function UserEvents({ userId }) {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [editingEvent, setEditingEvent] = useState(null);
 
     useEffect(() => {
         fetchUserEvents();
@@ -36,6 +38,18 @@ export default function UserEvents({ userId }) {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleEdit = (event) => {
+        setEditingEvent(event);
+    };
+
+    const handleEventUpdate = (updatedEvent) => {
+        setEvents(
+            events.map((event) =>
+                event.id === updatedEvent.id ? updatedEvent : event
+            )
+        );
     };
 
     const handleDelete = async (eventId) => {
@@ -59,57 +73,73 @@ export default function UserEvents({ userId }) {
     };
 
     if (loading) {
-        return <PageLoader type="events" />
+        return <PageLoader type="events" />;
     }
 
     return (
-        <div className="grid gap-6 md:grid-cols-2">
-            {events.length === 0 ? (
-                <p>You haven&apos;t created any events yet.</p>
-            ) : (
-                events.map((event) => (
-                    <Card key={event.id}>
-                        <CardHeader>
-                            <CardTitle>{event.name}</CardTitle>
-                            <CardDescription>
-                                {event.description || "No description provided"}
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="flex items-center space-x-2 text-sm text-gray-500 mb-2">
-                                <Calendar className="h-4 w-4" />
-                                <span>
-                                    {new Date(event.dateTime).toLocaleString()}
-                                </span>
-                            </div>
-                            <div className="flex items-center space-x-2 text-sm text-gray-500 mb-2">
-                                <MapPin className="h-4 w-4" />
-                                <span>{event.location}</span>
-                            </div>
-                            <div className="flex items-center space-x-2 text-sm text-gray-500">
-                                <Users className="h-4 w-4" />
-                                <span>
-                                    {event.registrations?.length || 0}/
-                                    {event.maxPlayers} players registered
-                                </span>
-                            </div>
-                        </CardContent>
-                        <CardFooter className="flex justify-between">
-                            <Button variant="outline">
-                                <Edit className="w-4 h-4 mr-2" />
-                                Edit
-                            </Button>
-                            <Button
-                                variant="destructive"
-                                onClick={() => handleDelete(event.id)}
-                            >
-                                <Trash className="w-4 h-4 mr-2" />
-                                Delete
-                            </Button>
-                        </CardFooter>
-                    </Card>
-                ))
+        <>
+            <div className="grid gap-6 md:grid-cols-2">
+                {events.length === 0 ? (
+                    <p>You haven&apos;t created any events yet.</p>
+                ) : (
+                    events.map((event) => (
+                        <Card key={event.id}>
+                            <CardHeader>
+                                <CardTitle>{event.name}</CardTitle>
+                                <CardDescription>
+                                    {event.description ||
+                                        "No description provided"}
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex items-center space-x-2 text-sm text-gray-500 mb-2">
+                                    <Calendar className="h-4 w-4" />
+                                    <span>
+                                        {new Date(
+                                            event.dateTime
+                                        ).toLocaleString()}
+                                    </span>
+                                </div>
+                                <div className="flex items-center space-x-2 text-sm text-gray-500 mb-2">
+                                    <MapPin className="h-4 w-4" />
+                                    <span>{event.location}</span>
+                                </div>
+                                <div className="flex items-center space-x-2 text-sm text-gray-500">
+                                    <Users className="h-4 w-4" />
+                                    <span>
+                                        {event.registrations?.length || 0}/
+                                        {event.maxPlayers} players registered
+                                    </span>
+                                </div>
+                            </CardContent>
+                            <CardFooter className="flex justify-between">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => handleEdit(event)}
+                                >
+                                    <Edit className="w-4 h-4 mr-2" />
+                                    Edit
+                                </Button>
+                                <Button
+                                    variant="destructive"
+                                    onClick={() => handleDelete(event.id)}
+                                >
+                                    <Trash className="w-4 h-4 mr-2" />
+                                    Delete
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                    ))
+                )}
+            </div>
+            {editingEvent && (
+                <EditEventForm
+                    event={editingEvent}
+                    isOpen={!!editingEvent}
+                    onClose={() => setEditingEvent(null)}
+                    onEventUpdate={handleEventUpdate}
+                />
             )}
-        </div>
+        </>
     );
 }

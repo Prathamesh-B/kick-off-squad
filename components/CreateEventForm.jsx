@@ -22,6 +22,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import { toast } from "sonner";
+import { Trophy } from "lucide-react";
 
 export default function CreateEventForm({ userId }) {
     const [formData, setFormData] = useState({
@@ -125,6 +126,7 @@ export default function CreateEventForm({ userId }) {
                                         value={formData.date}
                                         onChange={handleChange}
                                     />
+                                    <Button className="ml-2" variant="outline" type="button" onClick={() => setFormData({ ...formData, date: new Date().toISOString().split("T")[0] })}>Today</Button>
                                 </div>
                             </div>
                             <div className="space-y-2">
@@ -153,26 +155,29 @@ export default function CreateEventForm({ userId }) {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="type">Event Type</Label>
-                                <Select
-                                    onValueChange={(value) =>
-                                        handleSelectChange(value, "type")
-                                    }
-                                >
-                                    <SelectTrigger id="type">
-                                        <SelectValue placeholder="Select event type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="match">
-                                            Match
-                                        </SelectItem>
-                                        <SelectItem value="practice">
-                                            Practice
-                                        </SelectItem>
-                                        <SelectItem value="tournament">
-                                            Tournament
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <div className="flex items-center">
+                                    <Trophy className="w-4 h-4 mr-2 opacity-70" />
+                                    <Select
+                                        onValueChange={(value) =>
+                                            handleSelectChange(value, "type")
+                                        }
+                                    >
+                                        <SelectTrigger id="type">
+                                            <SelectValue placeholder="Select event type" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="match">
+                                                Match
+                                            </SelectItem>
+                                            <SelectItem value="practice">
+                                                Practice
+                                            </SelectItem>
+                                            <SelectItem value="tournament">
+                                                Tournament
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="maxPlayers">
@@ -185,8 +190,18 @@ export default function CreateEventForm({ userId }) {
                                         type="number"
                                         value={formData.maxPlayers}
                                         onChange={handleChange}
-                                        placeholder="e.g. 12"
+                                        placeholder="e.g. 10, 12"
                                     />
+                                    <Button
+                                        variant="outline"
+                                        className="ml-2"
+                                        type="button"
+                                        onClick={() =>
+                                            handleSelectChange(12, "maxPlayers")
+                                        }
+                                    >
+                                        12
+                                    </Button>
                                 </div>
                             </div>
                             <div className="space-y-2">

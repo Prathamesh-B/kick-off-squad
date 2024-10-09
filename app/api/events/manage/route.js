@@ -18,6 +18,7 @@ export async function GET(req) {
     try {
         const events = await prisma.event.findMany({
             where: { creatorId: parseInt(userId) },
+            include: { creator: true, registrations: true }
         })
         return new Response(JSON.stringify(events), { status: 200 })
     } catch (error) {
