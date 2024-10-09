@@ -1,14 +1,14 @@
-import { signOut } from "@/auth";
+"use client";
+
+import { signOut } from "next-auth/react";
 
 export function SignOut() {
     return (
-        <form
-            action={async () => {
-                "use server";
-                await signOut();
-            }}
+        <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="text-sm font-medium hover:underline underline-offset-4"
         >
-            <button className="text-sm font-medium hover:underline underline-offset-4" type="submit">Sign Out</button>
-        </form>
+            Sign Out
+        </button>
     );
 }

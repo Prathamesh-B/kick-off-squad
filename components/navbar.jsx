@@ -1,11 +1,13 @@
-import { auth } from "@/auth";
+"use client";
+
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { SignIn } from "./auth/signin-button";
 import UserButton from "./user-button";
 
-export default async function Navbar() {
-    const session = await auth();
+export default function Navbar() {
+    const { data: session, status } = useSession();
     const user = session?.user;
 
     return (
@@ -20,7 +22,9 @@ export default async function Navbar() {
                 <span className="ml-2 text-lg font-bold">Kick-Off Squad</span>
             </Link>
             <nav className="ml-auto flex gap-4 sm:gap-6 items-center">
-                {user ? (
+                {status === "loading" ? (
+                    <div>Loading...</div>
+                ) : user ? (
                     <>
                         <Link
                             className="text-sm font-medium hover:underline underline-offset-4"

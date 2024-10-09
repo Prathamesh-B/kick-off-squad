@@ -1,14 +1,14 @@
-import { signIn } from "@/auth";
+"use client";
+
+import { signIn } from "next-auth/react";
 
 export function SignIn() {
     return (
-        <form
-            action={async () => {
-                "use server";
-                await signIn("google", { redirectTo: "/dashboard" });
-            }}
+        <button
+            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+            className="text-sm font-medium hover:underline underline-offset-4"
         >
-            <button className="text-sm font-medium hover:underline underline-offset-4" type="submit">Sign in</button>
-        </form>
+            Sign in
+        </button>
     );
 }

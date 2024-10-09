@@ -36,27 +36,46 @@ const EventCard = ({ event, isPast }) => (
     </Card>
 );
 
-export default function Component() {
-    const [events, setEvents] = useState({ upcoming: [], past: [] });
+const EventsSection = ({ type }) => {
+    const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await fetch("/api/events/dashboard", { cache: 'no-store' });
-                console.log(response);
+                const response = await fetch(`/api/events/${type}`, { cache: 'no-store' });
                 if (!response.ok) throw new Error("Network response was not ok");
                 const data = await response.json();
                 setEvents(data);
             } catch (error) {
-                console.error("Error fetching events:", error);
+                console.error(`Error fetching ${type} events:`, error);
             } finally {
                 setLoading(false);
             }
         };
         fetchEvents();
-    }, []);
+    }, [type]);
 
+    return (
+        <div className="grid gap-6 md:grid-cols-2">
+            {loading ? (
+                <p>Loading...</p>
+            ) : events.length === 0 ? (
+                <p>No {type} events found.</p>
+            ) : (
+                events.map(event => (
+                    <EventCard 
+                        key={event.id} 
+                        event={event} 
+                        isPast={type === 'past'} 
+                    />
+                ))
+            )}
+        </div>
+    );
+};
+
+export default function Component() {
     return (
         <div className="flex flex-col min-h-screen">
             <main className="flex-1 py-6 px-4 md:px-6">
@@ -68,14 +87,10 @@ export default function Component() {
                             <TabsTrigger value="past">Past Events</TabsTrigger>
                         </TabsList>
                         <TabsContent value="upcoming">
-                            <div className="grid gap-6 md:grid-cols-2">
-                                {loading ? <p>Loading...</p> : events.upcoming.map(event => <EventCard key={event.id} event={event} isPast={false} />)}
-                            </div>
+                            <EventsSection type="upcoming" />
                         </TabsContent>
                         <TabsContent value="past">
-                            <div className="grid gap-6 md:grid-cols-2">
-                                {loading ? <p>Loading...</p> : events.past.map(event => <EventCard key={event.id} event={event} isPast={true} />)}
-                            </div>
+                            <EventsSection type="past" />
                         </TabsContent>
                     </Tabs>
                 </div>
