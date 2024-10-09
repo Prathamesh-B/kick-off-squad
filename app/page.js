@@ -28,11 +28,11 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-100">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-100 dark:bg-slate-900">
           <div className="container px-4 md:px-6">
             <div className="grid gap-10 sm:px-10 md:gap-16 md:grid-cols-2">
               <div className="space-y-4">
-                <div className="inline-block rounded-lg bg-gray-200 p-2">
+                <div className="inline-block rounded-lg bg-gray-200 p-2 dark:bg-slate-500">
                   <Calendar className="h-6 w-6" />
                 </div>
                 <h2 className="text-2xl font-bold">Easy Registration</h2>
@@ -41,7 +41,7 @@ export default function Home() {
                 </p>
               </div>
               <div className="space-y-4">
-                <div className="inline-block rounded-lg bg-gray-200 p-2">
+                <div className="inline-block rounded-lg bg-gray-200 p-2 dark:bg-slate-500">
                   <Users className="h-6 w-6" />
                 </div>
                 <h2 className="text-2xl font-bold">Smart Team Generation</h2>

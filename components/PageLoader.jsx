@@ -33,7 +33,7 @@ export function PageLoader({ type = "default" }) {
 
     if (type === "profile") {
         return (
-            <div className="max-w-2xl mx-auto space-y-8">
+            <div className="max-w-2xl mx-auto space-y-8 py-6">
                 <Skeleton className="h-10 w-48" />
                 <Card>
                     <CardHeader>

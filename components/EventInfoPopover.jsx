@@ -15,7 +15,7 @@ export default function EventInfoPopover({ creator, registrations }) {
                     <Info className="h-4 w-4" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80">
+            <PopoverContent className="w-80" align="end">
                 <div className="space-y-4">
                     <div>
                         <h4 className="font-semibold mb-2">Creator</h4>

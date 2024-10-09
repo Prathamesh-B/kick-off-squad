@@ -1,6 +1,8 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
+import { LogOut, Moon, Sun, User, Calendar } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
@@ -14,10 +16,19 @@ import {
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { signOut } from "next-auth/react";
-import { User } from "lucide-react";
-import { Calendar } from "lucide-react";
 
 export default function UserButton({ user }) {
+    const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return null;
+    }
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -55,6 +66,24 @@ export default function UserButton({ user }) {
                         className="flex w-full items-center"
                     >
                         <LogOut className="mr-2 h-4 w-4" /> Log Out
+                    </button>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                    <button
+                        onClick={() =>
+                            setTheme(theme === "dark" ? "light" : "dark")
+                        }
+                        className="flex w-full items-center"
+                    >
+                        {theme === "dark" ? (
+                            <Sun className="mr-2 h-4 w-4" />
+                        ) : (
+                            <Moon className="mr-2 h-4 w-4" />
+                        )}
+                        <span>
+                            {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                        </span>
                     </button>
                 </DropdownMenuItem>
             </DropdownMenuContent>

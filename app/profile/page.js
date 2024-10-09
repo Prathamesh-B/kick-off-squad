@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
-import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from 'sonner'
 import { PageLoader } from "@/components/PageLoader"
 
