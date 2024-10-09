@@ -12,11 +12,24 @@ export async function GET() {
                 },
             },
             include: {
-                registrations: true,
-                creator: true,
-            },
-            orderBy: {
-                date: 'asc',
+                registrations: {
+                    include: {
+                        user: {
+                            select: {
+                                name: true,
+                                email: true,
+                                image: true,
+                            },
+                        },
+                    },
+                },
+                creator: {
+                    select: {
+                        name: true,
+                        email: true,
+                        image: true,
+                    },
+                },
             },
         });
 

@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function EventsPage() {
     const { data: session } = useSession()
+    const userId = session?.user?.id
 
     if (!session) {
         return <div>Please sign in to access this page.</div>
@@ -23,10 +24,10 @@ export default function EventsPage() {
                             <TabsTrigger value="manage">Manage Events</TabsTrigger>
                         </TabsList>
                         <TabsContent value="create">
-                            <CreateEventForm userId={session.user.id} />
+                            <CreateEventForm userId={userId} />
                         </TabsContent>
                         <TabsContent value="manage">
-                            <UserEvents userId={session.user.id} />
+                            <UserEvents userId={userId} />
                         </TabsContent>
                     </Tabs>
                 </div>

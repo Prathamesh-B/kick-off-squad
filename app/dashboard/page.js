@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import EventInfoPopover from "@/components/EventInfoPopover";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import { toast } from "sonner";
 
@@ -42,9 +43,9 @@ const EventCard = ({ event, isPast, onRegistrationUpdate }) => {
 
             const updatedEvent = await response.json();
             onRegistrationUpdate(updatedEvent);
-            
-            toast.success(isUserRegistered ? 
-                "Successfully unregistered from event" : 
+
+            toast.success(isUserRegistered ?
+                "Successfully unregistered from event" :
                 "Successfully registered for event"
             );
         } catch (error) {
@@ -76,8 +77,8 @@ const EventCard = ({ event, isPast, onRegistrationUpdate }) => {
                 <div className="flex items-center space-x-2 text-sm text-gray-500">
                     <Users className="h-4 w-4" />
                     <span>
-                        {isPast 
-                            ? `${event.registrations.length} players participated` 
+                        {isPast
+                            ? `${event.registrations.length} players participated`
                             : `${event.registrations.length}/${event.maxPlayers} players registered`
                         }
                     </span>
@@ -87,22 +88,23 @@ const EventCard = ({ event, isPast, onRegistrationUpdate }) => {
                 {isPast ? (
                     <Button className="w-full">View Results</Button>
                 ) : (
-                    <Button 
-                        className="w-full" 
+                    <Button
+                        className="w-full"
                         onClick={handleRegistration}
                         disabled={isLoading || (!isUserRegistered && event.registrations.length >= event.maxPlayers)}
                         variant={isUserRegistered ? "destructive" : "default"}
                     >
-                        {isLoading 
-                            ? "Processing..." 
-                            : isUserRegistered 
-                                ? "Unregister" 
+                        {isLoading
+                            ? "Processing..."
+                            : isUserRegistered
+                                ? "Unregister"
                                 : event.registrations.length >= event.maxPlayers
                                     ? "Event Full"
                                     : "Register"
                         }
                     </Button>
                 )}
+                <EventInfoPopover creator={event.creator} registrations={event.registrations} />
             </CardFooter>
         </Card>
     );
@@ -146,9 +148,9 @@ const EventsSection = ({ type }) => {
                 <p>No {type} events found.</p>
             ) : (
                 events.map(event => (
-                    <EventCard 
-                        key={event.id} 
-                        event={event} 
+                    <EventCard
+                        key={event.id}
+                        event={event}
                         isPast={type === 'past'}
                         onRegistrationUpdate={handleRegistrationUpdate}
                     />
