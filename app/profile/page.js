@@ -1,10 +1,134 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
+import { Skeleton } from "@/components/ui/skeleton"
+import { toast } from 'sonner'
 
 export default function Component() {
+    const [user, setUser] = useState(null)
+    const [skills, setSkills] = useState({
+        passing: 3,
+        shooting: 3,
+        teamwork: 3,
+        defending: 3,
+        positioning: 3,
+        position: ''
+    })
+    const [isLoading, setIsLoading] = useState(false)
+    const [isPageLoading, setIsPageLoading] = useState(true)
+
+    useEffect(() => {
+        fetchUserData()
+    }, [])
+
+    const fetchUserData = async () => {
+        try {
+            const response = await fetch('/api/user/profile')
+            const data = await response.json()
+            setUser(data.user)
+            if (data.skills) {
+                setSkills(data.skills)
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error)
+            toast.error('Failed to load profile data')
+        } finally {
+            setIsPageLoading(false)
+        }
+    }
+
+    const handleSkillChange = (skill, value) => {
+        setSkills(prev => ({
+            ...prev,
+            [skill]: value[0]
+        }))
+    }
+
+    const handlePositionChange = (e) => {
+        setSkills(prev => ({
+            ...prev,
+            position: e.target.value
+        }))
+    }
+
+    const handleSave = async () => {
+        setIsLoading(true)
+        try {
+            const response = await fetch('/api/user/skills', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(skills),
+            })
+            if (!response.ok) throw new Error('Failed to save skills')
+            toast.success('Profile updated successfully')
+        } catch (error) {
+            console.error('Error saving skills:', error)
+            toast.error('Failed to save profile')
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    if (isPageLoading) {
+        return (
+            <div className="flex flex-col min-h-screen">
+                <main className="flex-1 py-6 px-4 md:px-6">
+                    <div className="max-w-2xl mx-auto space-y-8">
+                        <Skeleton className="h-10 w-48" />
+                        <Card>
+                            <CardHeader>
+                                <Skeleton className="h-7 w-40" />
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="space-y-2">
+                                    <Skeleton className="h-5 w-20" />
+                                    <Skeleton className="h-10 w-full" />
+                                </div>
+                                <div className="space-y-2">
+                                    <Skeleton className="h-5 w-20" />
+                                    <Skeleton className="h-10 w-full" />
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader>
+                                <Skeleton className="h-7 w-40" />
+                                <Skeleton className="h-5 w-60" />
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                {[1, 2, 3, 4, 5].map((i) => (
+                                    <div key={i} className="space-y-2">
+                                        <Skeleton className="h-5 w-20" />
+                                        <Skeleton className="h-5 w-full" />
+                                        <div className="flex justify-between">
+                                            {[1, 2, 3, 4, 5, 6].map((j) => (
+                                                <Skeleton key={j} className="h-4 w-4" />
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                                <div className="space-y-2">
+                                    <Skeleton className="h-5 w-32" />
+                                    <Skeleton className="h-10 w-full" />
+                                </div>
+                            </CardContent>
+                            <CardFooter>
+                                <Skeleton className="h-10 w-full" />
+                            </CardFooter>
+                        </Card>
+                    </div>
+                </main>
+            </div>
+        )
+    }
+
     return (
         <div className="flex flex-col min-h-screen">
             <main className="flex-1 py-6 px-4 md:px-6">
@@ -17,11 +141,11 @@ export default function Component() {
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="name">Full Name</Label>
-                                <Input disabled id="name" placeholder="John Doe" />
+                                <Input disabled id="name" value={user?.name || ''} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
-                                <Input disabled id="email" placeholder="john@example.com" type="email" />
+                                <Input disabled id="email" value={user?.email || ''} type="email" />
                             </div>
                         </CardContent>
                     </Card>
@@ -31,103 +155,42 @@ export default function Component() {
                             <CardDescription>Rate your skills on a scale of 1-5.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <div className="space-y-2">
-                                <Label htmlFor="passing">Passing</Label>
-                                <Slider
-                                    id="passing"
-                                    max={5}
-                                    step={1}
-                                    defaultValue={[3]}
-                                    className="w-full"
-                                />
-                                <div className="flex justify-between text-xs text-gray-500">
-                                    <span>0</span>
-                                    <span>1</span>
-                                    <span>2</span>
-                                    <span>3</span>
-                                    <span>4</span>
-                                    <span>5</span>
+                            {Object.entries(skills).filter(([key]) => key !== 'position' && key !== 'userId' && key !== 'id').map(([skill, value]) => (
+                                <div key={skill} className="space-y-2">
+                                    <Label htmlFor={skill}>{skill.charAt(0).toUpperCase() + skill.slice(1)}</Label>
+                                    <Slider
+                                        id={skill}
+                                        max={5}
+                                        step={1}
+                                        value={[value]}
+                                        onValueChange={(value) => handleSkillChange(skill, value)}
+                                        className="w-full"
+                                    />
+                                    <div className="flex justify-between text-xs text-gray-500">
+                                        {[0, 1, 2, 3, 4, 5].map(num => (
+                                            <span key={num}>{num}</span>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="shooting">Shooting</Label>
-                                <Slider
-                                    id="shooting"
-                                    max={5}
-                                    step={1}
-                                    defaultValue={[3]}
-                                    className="w-full"
-                                />
-                                <div className="flex justify-between text-xs text-gray-500">
-                                    <span>0</span>
-                                    <span>1</span>
-                                    <span>2</span>
-                                    <span>3</span>
-                                    <span>4</span>
-                                    <span>5</span>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="teamwork">Teamwork</Label>
-                                <Slider
-                                    id="teamwork"
-                                    max={5}
-                                    step={1}
-                                    defaultValue={[3]}
-                                    className="w-full"
-                                />
-                                <div className="flex justify-between text-xs text-gray-500">
-                                    <span>0</span>
-                                    <span>1</span>
-                                    <span>2</span>
-                                    <span>3</span>
-                                    <span>4</span>
-                                    <span>5</span>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="defending">Defending</Label>
-                                <Slider
-                                    id="defending"
-                                    max={5}
-                                    step={1}
-                                    defaultValue={[3]}
-                                    className="w-full"
-                                />
-                                <div className="flex justify-between text-xs text-gray-500">
-                                    <span>0</span>
-                                    <span>1</span>
-                                    <span>2</span>
-                                    <span>3</span>
-                                    <span>4</span>
-                                    <span>5</span>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="positioning">Positioning</Label>
-                                <Slider
-                                    id="positioning"
-                                    max={5}
-                                    step={1}
-                                    defaultValue={[3]}
-                                    className="w-full"
-                                />
-                                <div className="flex justify-between text-xs text-gray-500">
-                                    <span>0</span>
-                                    <span>1</span>
-                                    <span>2</span>
-                                    <span>3</span>
-                                    <span>4</span>
-                                    <span>5</span>
-                                </div>
-                            </div>
+                            ))}
                             <div className="space-y-2">
                                 <Label htmlFor="position">Preferred Position</Label>
-                                <Input id="position" placeholder="e.g. Striker, Midfielder" />
+                                <Input
+                                    id="position"
+                                    placeholder="e.g. Striker, Midfielder"
+                                    value={skills.position}
+                                    onChange={handlePositionChange}
+                                />
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <Button className="w-full">Save Profile</Button>
+                            <Button
+                                className="w-full"
+                                onClick={handleSave}
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Saving...' : 'Save Profile'}
+                            </Button>
                         </CardFooter>
                     </Card>
                 </div>

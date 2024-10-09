@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
           <Navbar />
           {children}
           <Footer />
-          <Toaster position="bottom-center" richColors />
+          <Toaster position="top-center" richColors closeButton />
         </body>
       </html>
     </SessionWrapper>
