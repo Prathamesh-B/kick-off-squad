@@ -32,6 +32,7 @@ export async function GET() {
                         image: true,
                     },
                 },
+                result: true,
             },
             orderBy: {
                 dateTime: 'desc',

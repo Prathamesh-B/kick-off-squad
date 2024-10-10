@@ -14,10 +14,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <SessionWrapper>
-      <html lang="en">
-        <body
-          className="antialiased"
-        >
+      <html lang="en" suppressHydrationWarning>
+        <body className="antialiased">
           <SWRProvider>
             <ThemeProvider
               attribute="class"

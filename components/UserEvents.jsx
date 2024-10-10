@@ -13,12 +13,14 @@ import {
 import { PageLoader } from "@/components/PageLoader";
 import { Calendar, MapPin, Users, Edit, Trash } from "lucide-react";
 import EditEventForm from "./EditEventForm";
+import DeclareResultForm from "./DeclareResultForm";
 import { toast } from "sonner";
 import useSWR from "swr";
 import { formatDateTime } from "@/lib/formatDateTime";
 
 export default function UserEvents({ userId }) {
     const [editingEvent, setEditingEvent] = useState(null);
+    const [declaringResult, setDeclaringResult] = useState(null);
 
     const {
         data: events,
@@ -70,6 +72,10 @@ export default function UserEvents({ userId }) {
         }
     };
 
+    const isPastEvent = (event) => {
+        return new Date(event.dateTime) < new Date();
+    };
+
     if (error) return <div>Failed to load events</div>;
     if (!events) return <PageLoader type="events" />;
 
@@ -107,7 +113,7 @@ export default function UserEvents({ userId }) {
                                     </span>
                                 </div>
                             </CardContent>
-                            <CardFooter className="flex justify-between">
+                            <CardFooter className="flex justify-between flex-wrap gap-2">
                                 <Button
                                     variant="outline"
                                     onClick={() => handleEdit(event)}
@@ -115,6 +121,22 @@ export default function UserEvents({ userId }) {
                                     <Edit className="w-4 h-4 mr-2" />
                                     Edit
                                 </Button>
+                                {isPastEvent(event) && !event.result && (
+                                    <Button
+                                        variant="outline"
+                                        onClick={() =>
+                                            setDeclaringResult(event)
+                                        }
+                                    >
+                                        Declare Result
+                                    </Button>
+                                )}
+                                {event.result && (
+                                    <div className="text-sm">
+                                        Result: {event.result.team1Score} -{" "}
+                                        {event.result.team2Score}
+                                    </div>
+                                )}
                                 <Button
                                     variant="destructive"
                                     onClick={() => handleDelete(event.id)}
@@ -133,6 +155,22 @@ export default function UserEvents({ userId }) {
                     isOpen={!!editingEvent}
                     onClose={() => setEditingEvent(null)}
                     onEventUpdate={handleEventUpdate}
+                />
+            )}
+            {declaringResult && (
+                <DeclareResultForm
+                    event={declaringResult}
+                    isOpen={!!declaringResult}
+                    onClose={() => setDeclaringResult(null)}
+                    onResultDeclared={(result) => {
+                        const updatedEvents = events.map((event) =>
+                            event.id === result.eventId
+                                ? { ...event, result: result }
+                                : event
+                        );
+                        mutate(updatedEvents, false);
+                        setDeclaringResult(null);
+                    }}
                 />
             )}
         </>

@@ -119,7 +119,19 @@ const EventCard = ({ event, isPast, onRegistrationUpdate }) => {
                 </CardContent>
                 <CardFooter>
                     {isPast ? (
-                        <Button className="w-full">View Results</Button>
+                        <>
+                            {event.result ? (
+                                <div className="w-full text-center">
+                                    <p className="text-lg">
+                                        <strong>Final Score: </strong>{event.result.team1Score} - {event.result.team2Score}
+                                    </p>
+                                </div>
+                            ) : (
+                                <p className="text-sm text-gray-500 text-center w-full">
+                                    Result not yet declared
+                                </p>
+                            )}
+                        </>
                     ) : (
                         <Button
                             className="w-full"

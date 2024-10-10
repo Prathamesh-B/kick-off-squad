@@ -7,9 +7,7 @@ import { SignIn } from "./auth/signin-button";
 import UserButton from "./user-button";
 import { PageLoader } from "./PageLoader";
 import { useTheme } from "next-themes";
-import { Sun } from "lucide-react";
-import { Moon } from "lucide-react";
-import { ChevronDown } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 import { Button } from "./ui/button";
 
 export default function Navbar() {
