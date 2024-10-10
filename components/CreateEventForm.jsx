@@ -300,7 +300,7 @@ export default function CreateEventForm({ userId }) {
                                     id="description"
                                     value={formData.description}
                                     onChange={handleChange}
-                                    placeholder="Provide any additional details about the event..."
+                                    placeholder="Add event details. For fees, use formats like ₹500, Rs 500, or 500/-"
                                     rows={4}
                                 />
                             </div>
@@ -325,7 +325,8 @@ export default function CreateEventForm({ userId }) {
                     <DialogHeader>
                         <DialogTitle>UPI Setup Required</DialogTitle>
                         <DialogDescription>
-                            To create an event, you need to set up your UPI Id first. This helps with managing payments for your events.
+                            To create an event, you need to set up your UPI Id first.
+                            This helps with managing payments for your events.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>

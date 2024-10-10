@@ -6,8 +6,14 @@ import Link from "next/link";
 import { SignIn } from "./auth/signin-button";
 import UserButton from "./user-button";
 import { PageLoader } from "./PageLoader";
+import { useTheme } from "next-themes";
+import { Sun } from "lucide-react";
+import { Moon } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import { Button } from "./ui/button";
 
 export default function Navbar() {
+    const { theme, setTheme } = useTheme();
     const { data: session, status } = useSession();
     const user = session?.user;
 
@@ -31,7 +37,21 @@ export default function Navbar() {
                         <UserButton user={user} />
                     </>
                 ) : (
-                    <SignIn />
+                    <>
+                        <SignIn />
+                        <Button
+                            onClick={() =>
+                                setTheme(theme === "dark" ? "light" : "dark")
+                            }
+                            className="p-2"
+                        >
+                            {theme === "dark" ? (
+                                <Sun className="h-4 w-4" />
+                            ) : (
+                                <Moon className="h-4 w-4" />
+                            )}
+                        </Button>
+                    </>
                 )}
             </nav>
         </header>
