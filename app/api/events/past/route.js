@@ -40,6 +40,8 @@ export async function GET() {
             headers: {
                 'Content-Type': 'application/json',
                 'Cache-Control': 'no-store, max-age=0, must-revalidate',
+                'CDN-Cache-Control': 'no-store',
+                'Vercel-CDN-Cache-Control': 'no-store'
             },
         });
     } catch (error) {
@@ -49,6 +51,8 @@ export async function GET() {
             headers: {
                 'Content-Type': 'application/json',
                 'Cache-Control': 'no-store, max-age=0, must-revalidate',
+                'CDN-Cache-Control': 'no-store',
+                'Vercel-CDN-Cache-Control': 'no-store'
             },
         });
     }

@@ -14,7 +14,7 @@ import { PageLoader } from "@/components/PageLoader";
 import { Calendar, MapPin, Users, Edit, Trash } from "lucide-react";
 import EditEventForm from "./EditEventForm";
 import { toast } from "sonner";
-import useSWR, { fetcher } from 'swr'
+import useSWR from "swr";
 
 export default function UserEvents({ userId }) {
     const [editingEvent, setEditingEvent] = useState(null);
@@ -26,8 +26,7 @@ export default function UserEvents({ userId }) {
     } = useSWR(
         userId
             ? `/api/events/manage?userId=${encodeURIComponent(userId)}`
-            : null,
-        fetcher
+            : null
     );
 
     const handleEdit = (event) => {

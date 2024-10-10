@@ -8,11 +8,11 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { toast } from 'sonner'
 import { PageLoader } from "@/components/PageLoader"
-import useSWR, { fetcher } from 'swr'
+import useSWR from 'swr'
 
 
 export default function Component() {
-    const { data, error, mutate } = useSWR('/api/user/profile', fetcher)
+    const { data, error, mutate } = useSWR('/api/user/profile')
     const [isLoading, setIsLoading] = useState(false)
     const [skills, setSkills] = useState({
         passing: 3,

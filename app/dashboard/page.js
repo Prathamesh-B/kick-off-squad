@@ -9,7 +9,7 @@ import EventInfoPopover from "@/components/EventInfoPopover";
 import { Calendar, MapPin, Users } from "lucide-react";
 import { toast } from "sonner";
 import { PageLoader } from "@/components/PageLoader";
-import useSWR, { fetcher } from 'swr'
+import useSWR from 'swr'
 
 // Opt out of caching
 export const dynamic = 'force-dynamic';
@@ -124,7 +124,7 @@ const EventCard = ({ event, isPast, onRegistrationUpdate }) => {
 };
 
 const EventsSection = ({ type }) => {
-    const { data: events, error, mutate } = useSWR(`/api/events/${type}`, fetcher)
+    const { data: events, error, mutate } = useSWR(`/api/events/${type}`)
 
     const handleRegistrationUpdate = (updatedEvent) => {
         const optimisticData = events.map(event =>
