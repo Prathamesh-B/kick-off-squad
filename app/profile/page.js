@@ -14,6 +14,8 @@ import useSWR from 'swr'
 export default function Component() {
     const { data, error, mutate } = useSWR('/api/user/profile')
     const [isLoading, setIsLoading] = useState(false)
+    const [upiNumber, setUpiNumber] = useState('')
+    const [isUpiLoading, setIsUpiLoading] = useState(false)
     const [skills, setSkills] = useState({
         passing: 3,
         shooting: 3,
@@ -27,7 +29,14 @@ export default function Component() {
         if (data?.skills) {
             setSkills(data.skills)
         }
+        if (data?.user?.upiNumber) {
+            setUpiNumber(data.user.upiNumber)
+        }
     }, [data])
+
+    const handleUpiChange = (e) => {
+        setUpiNumber(e.target.value)
+    }
 
     const handleSkillChange = (skill, value) => {
         setSkills(prev => ({
@@ -70,6 +79,36 @@ export default function Component() {
         }
     }
 
+    const handleUpiSave = async () => {
+        setIsUpiLoading(true)
+        try {
+            const response = await fetch('/api/user/upi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ upiNumber }),
+            })
+
+            if (!response.ok) throw new Error('Failed to save UPI number')
+
+            mutate({
+                ...data,
+                user: {
+                    ...data.user,
+                    upiNumber
+                }
+            }, false)
+
+            toast.success('UPI number updated successfully')
+        } catch (error) {
+            console.error('Error saving UPI number:', error)
+            toast.error('Failed to save UPI number')
+        } finally {
+            setIsUpiLoading(false)
+        }
+    }
+
     if (error) return <div>Failed to load profile</div>
     if (!data) return <PageLoader type="profile" />
 
@@ -90,6 +129,23 @@ export default function Component() {
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
                                 <Input disabled id="email" value={data.user?.email || ''} type="email" />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="upiNumber">UPI Number</Label>
+                                <div className="flex space-x-2">
+                                    <Input
+                                        id="upiNumber"
+                                        value={upiNumber}
+                                        onChange={handleUpiChange}
+                                        placeholder="Enter your UPI number"
+                                    />
+                                    <Button
+                                        onClick={handleUpiSave}
+                                        disabled={isUpiLoading}
+                                    >
+                                        {isUpiLoading ? 'Saving...' : 'Save'}
+                                    </Button>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>

@@ -20,11 +20,37 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Calendar, Clock, MapPin, Users } from "lucide-react";
+import {
+    Calendar,
+    Clock,
+    MapPin,
+    Users,
+    Trophy,
+    AlertCircle,
+} from "lucide-react";
 import { toast } from "sonner";
-import { Trophy } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import useSWR from "swr";
+import { PageLoader } from "./PageLoader";
 
 export default function CreateEventForm({ userId }) {
+    const router = useRouter();
+    const [showUpiDialog, setShowUpiDialog] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const { data: profileData, error: profileError } =
+        useSWR("/api/user/profile");
+
     const [formData, setFormData] = useState({
         name: "",
         date: "",
@@ -34,25 +60,41 @@ export default function CreateEventForm({ userId }) {
         maxPlayers: "",
         description: "",
     });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
+        setFormData((prevData) => ({
+            ...prevData,
             [e.target.id]: e.target.value,
-        });
+        }));
     };
 
     const handleSelectChange = (value, id) => {
-        setFormData({
-            ...formData,
+        setFormData((prevData) => ({
+            ...prevData,
             [id]: value,
+        }));
+    };
+
+    const resetForm = () => {
+        setFormData({
+            name: "",
+            date: "",
+            time: "",
+            location: "",
+            type: "",
+            maxPlayers: "",
+            description: "",
         });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!profileData?.user?.upiNumber) {
+            setShowUpiDialog(true);
+            return;
+        }
+
         setLoading(true);
         setError(null);
 
@@ -68,8 +110,8 @@ export default function CreateEventForm({ userId }) {
                 },
                 body: JSON.stringify({
                     ...formData,
-                    dateTime: dateTime,
-                    maxPlayers: parseInt(formData.maxPlayers),
+                    dateTime,
+                    maxPlayers: parseInt(formData.maxPlayers, 10),
                     creatorId: userId,
                 }),
             });
@@ -77,15 +119,7 @@ export default function CreateEventForm({ userId }) {
             if (response.ok) {
                 const event = await response.json();
                 toast.success(`Successfully created event: ${event.name}`);
-                setFormData({
-                    name: "",
-                    date: "",
-                    time: "",
-                    location: "",
-                    type: "",
-                    maxPlayers: "",
-                    description: "",
-                });
+                resetForm();
             } else {
                 const errorData = await response.json();
                 setError(errorData.error);
@@ -97,10 +131,47 @@ export default function CreateEventForm({ userId }) {
         }
     };
 
+    if (profileError) return <div>Failed to load user profile</div>;
+    if (!profileData) return <PageLoader />;
+
     return (
         <main className="px-4 md:px-6">
-            <div className="mx-auto space-y-2">
+            <div className="mx-auto space-y-4">
                 <h1 className="text-2xl font-bold">Create New Event</h1>
+                {profileData?.user?.upiNumber ? (
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-500">
+                                Your UPI Number
+                            </p>
+                            <p className="font-medium">
+                                {profileData.user.upiNumber}
+                            </p>
+                        </div>
+                        <Button
+                            variant="outline"
+                            onClick={() => router.push("/profile")}
+                        >
+                            Update UPI
+                        </Button>
+                    </div>
+                ) : (
+                    <Alert variant="warning">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription className="mt-1">
+                            You need to set up your UPI number before creating
+                            events.
+                            <Button
+                                variant="link"
+                                className="ml-2 h-auto p-0"
+                                onClick={() => router.push("/profile")}
+                            >
+                                Set up now
+                            </Button>
+                        </AlertDescription>
+                    </Alert>
+                )}
+
                 <form onSubmit={handleSubmit}>
                     <Card>
                         <CardHeader>
@@ -136,12 +207,12 @@ export default function CreateEventForm({ userId }) {
                                         variant="outline"
                                         type="button"
                                         onClick={() =>
-                                            setFormData({
-                                                ...formData,
+                                            setFormData((prevData) => ({
+                                                ...prevData,
                                                 date: new Date()
                                                     .toISOString()
                                                     .split("T")[0],
-                                            })
+                                            }))
                                         }
                                     >
                                         Today
@@ -239,7 +310,9 @@ export default function CreateEventForm({ userId }) {
                             <Button
                                 type="submit"
                                 className="w-full"
-                                disabled={loading}
+                                disabled={
+                                    loading || !profileData?.user?.upiNumber
+                                }
                             >
                                 {loading ? "Creating..." : "Create Event"}
                             </Button>
@@ -247,6 +320,29 @@ export default function CreateEventForm({ userId }) {
                     </Card>
                 </form>
             </div>
+            <Dialog open={showUpiDialog} onOpenChange={setShowUpiDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>UPI Setup Required</DialogTitle>
+                        <DialogDescription>
+                            To create an event, you need to set up your UPI
+                            number first. This helps with managing payments for
+                            your events.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button
+                            variant="secondary"
+                            onClick={() => setShowUpiDialog(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button onClick={() => router.push("/profile")}>
+                            Set Up UPI
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </main>
     );
 }

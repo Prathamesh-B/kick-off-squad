@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma';
 import { auth } from '@/auth'
 
-export async function GET() {
+export async function POST(request) {
     try {
         const session = await auth()
         if (!session) {
@@ -11,25 +11,19 @@ export async function GET() {
             })
         }
 
-        const user = await prisma.user.findUnique({
-            where: { id: session.user.id },
-            include: { skills: true }
-        })
+        const { upiNumber } = await request.json()
 
-        if (!user) {
-            return new Response(JSON.stringify({ error: 'User not found' }), {
-                status: 404,
-                headers: { 'Content-Type': 'application/json' },
-            })
-        }
+        const updatedUser = await prisma.user.update({
+            where: { email: session.user.email },
+            data: { upiNumber },
+        })
 
         return new Response(JSON.stringify({
             user: {
-                name: user.name,
-                email: user.email,
-                upiNumber: user.upiNumber,
-            },
-            skills: user.skills
+                name: updatedUser.name,
+                email: updatedUser.email,
+                upiNumber: updatedUser.upiNumber,
+            }
         }), {
             headers: { 'Content-Type': 'application/json' },
         })
