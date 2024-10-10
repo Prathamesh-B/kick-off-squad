@@ -39,6 +39,7 @@ export async function GET() {
             status: 200,
             headers: {
                 'Content-Type': 'application/json',
+                'Cache-Control': 'no-store, max-age=0, must-revalidate',
             },
         });
     } catch (error) {
@@ -47,6 +48,7 @@ export async function GET() {
             status: 500,
             headers: {
                 'Content-Type': 'application/json',
+                'Cache-Control': 'no-store, max-age=0, must-revalidate',
             },
         });
     }

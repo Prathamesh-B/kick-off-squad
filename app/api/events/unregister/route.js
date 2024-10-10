@@ -46,12 +46,12 @@ export async function POST(request) {
 
         return new Response(JSON.stringify(updatedEvent), {
             status: 200,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store, max-age=0, must-revalidate', },
         });
     } catch (error) {
         return new Response(JSON.stringify({ error: 'Failed to unregister' }), {
             status: 500,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store, max-age=0, must-revalidate', },
         });
     }
 }

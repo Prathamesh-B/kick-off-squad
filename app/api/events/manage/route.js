@@ -20,7 +20,11 @@ export async function GET(req) {
             where: { creatorId: parseInt(userId) },
             include: { creator: true, registrations: true }
         })
-        return new Response(JSON.stringify(events), { status: 200 })
+        return new Response(JSON.stringify(events), {
+            status: 200, headers: {
+                'Cache-Control': 'no-store, max-age=0, must-revalidate',
+            },
+        })
     } catch (error) {
         return new Response(JSON.stringify({ error: 'Unable to fetch events' }), { status: 400 })
     }
