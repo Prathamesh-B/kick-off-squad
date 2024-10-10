@@ -66,6 +66,7 @@ export default function EditEventForm({
                     },
                     body: JSON.stringify({
                         ...formData,
+                        dateTime: new Date(formData.dateTime).toISOString(),
                         maxPlayers: parseInt(formData.maxPlayers),
                     }),
                 }

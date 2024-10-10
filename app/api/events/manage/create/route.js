@@ -4,9 +4,7 @@ import prisma from '@/lib/prisma';
 export async function POST(req) {
     try {
         const body = await req.json()
-        const { name, date, time, location, type, maxPlayers, description, creatorId } = body
-
-        const dateTime = new Date(`${date}T${time}`)
+        const { name, dateTime, location, type, maxPlayers, description, creatorId } = body
 
         const event = await prisma.event.create({
             data: {

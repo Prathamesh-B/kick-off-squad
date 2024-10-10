@@ -57,6 +57,10 @@ export default function CreateEventForm({ userId }) {
         setError(null);
 
         try {
+            const dateTime = new Date(
+                `${formData.date}T${formData.time}`
+            ).toISOString();
+
             const response = await fetch("/api/events/manage/create", {
                 method: "POST",
                 headers: {
@@ -64,6 +68,7 @@ export default function CreateEventForm({ userId }) {
                 },
                 body: JSON.stringify({
                     ...formData,
+                    dateTime: dateTime,
                     maxPlayers: parseInt(formData.maxPlayers),
                     creatorId: userId,
                 }),
@@ -126,7 +131,21 @@ export default function CreateEventForm({ userId }) {
                                         value={formData.date}
                                         onChange={handleChange}
                                     />
-                                    <Button className="ml-2" variant="outline" type="button" onClick={() => setFormData({ ...formData, date: new Date().toISOString().split("T")[0] })}>Today</Button>
+                                    <Button
+                                        className="ml-2"
+                                        variant="outline"
+                                        type="button"
+                                        onClick={() =>
+                                            setFormData({
+                                                ...formData,
+                                                date: new Date()
+                                                    .toISOString()
+                                                    .split("T")[0],
+                                            })
+                                        }
+                                    >
+                                        Today
+                                    </Button>
                                 </div>
                             </div>
                             <div className="space-y-2">
