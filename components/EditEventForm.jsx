@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { formatDateTime } from "@/lib/formatDateTime";
 
 export default function EditEventForm({
     event,
@@ -28,7 +29,7 @@ export default function EditEventForm({
 }) {
     const [formData, setFormData] = useState({
         name: event.name,
-        dateTime: new Date(event.dateTime).toISOString().slice(0, 16),
+        dateTime: formatDateTime(event.dateTime, true),
         location: event.location,
         type: event.type,
         maxPlayers: event.maxPlayers,

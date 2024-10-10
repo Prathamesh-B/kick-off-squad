@@ -10,6 +10,7 @@ import { Calendar, MapPin, Users } from "lucide-react";
 import { toast } from "sonner";
 import { PageLoader } from "@/components/PageLoader";
 import useSWR from 'swr'
+import { formatDateTime } from "@/lib/formatDateTime";
 
 // Opt out of caching
 export const dynamic = 'force-dynamic';
@@ -81,7 +82,7 @@ const EventCard = ({ event, isPast, onRegistrationUpdate }) => {
             <CardContent>
                 <div className="flex items-center space-x-2 text-sm text-gray-500 mb-2">
                     <Calendar className="h-4 w-4" />
-                    <span>{new Date(event.dateTime).toLocaleString()}</span>
+                    <span>{formatDateTime(event.dateTime)}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-gray-500 mb-2">
                     <MapPin className="h-4 w-4" />

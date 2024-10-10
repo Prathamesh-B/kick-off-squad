@@ -15,6 +15,7 @@ import { Calendar, MapPin, Users, Edit, Trash } from "lucide-react";
 import EditEventForm from "./EditEventForm";
 import { toast } from "sonner";
 import useSWR from "swr";
+import { formatDateTime } from "@/lib/formatDateTime";
 
 export default function UserEvents({ userId }) {
     const [editingEvent, setEditingEvent] = useState(null);
@@ -46,11 +47,6 @@ export default function UserEvents({ userId }) {
         if (!confirm("Are you sure you want to delete this event?")) return;
 
         try {
-            const optimisticEvents = events.filter(
-                (event) => event.id !== eventId
-            );
-            mutate(optimisticEvents, false);
-
             const response = await fetch(
                 `/api/events/manage/delete/${eventId}`,
                 {
@@ -63,9 +59,12 @@ export default function UserEvents({ userId }) {
             }
 
             toast.success("Event deleted successfully");
+            const optimisticEvents = events.filter(
+                (event) => event.id !== eventId
+            );
+            mutate(optimisticEvents, false);
         } catch (error) {
-            // Revert optimistic update on error
-            mutate(); // This will trigger a revalidation
+            mutate();
             console.error("Error deleting event:", error);
             toast.error("Failed to delete event");
         }
@@ -93,9 +92,7 @@ export default function UserEvents({ userId }) {
                                 <div className="flex items-center space-x-2 text-sm text-gray-500 mb-2">
                                     <Calendar className="h-4 w-4" />
                                     <span>
-                                        {new Date(
-                                            event.dateTime
-                                        ).toLocaleString()}
+                                        {formatDateTime(event.dateTime)}
                                     </span>
                                 </div>
                                 <div className="flex items-center space-x-2 text-sm text-gray-500 mb-2">
