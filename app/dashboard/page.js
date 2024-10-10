@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,10 +9,10 @@ import EventInfoPopover from "@/components/EventInfoPopover";
 import { Calendar, MapPin, Users } from "lucide-react";
 import { toast } from "sonner";
 import { PageLoader } from "@/components/PageLoader";
-
+import useSWR, { fetcher } from 'swr'
 
 // Opt out of caching
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 const EventCard = ({ event, isPast, onRegistrationUpdate }) => {
     const { data: session } = useSession();
@@ -29,8 +29,18 @@ const EventCard = ({ event, isPast, onRegistrationUpdate }) => {
         }
 
         setIsLoading(true);
+        const endpoint = isUserRegistered ? '/api/events/unregister' : '/api/events/register';
+
         try {
-            const endpoint = isUserRegistered ? '/api/events/unregister' : '/api/events/register';
+            const optimisticEvent = {
+                ...event,
+                registrations: isUserRegistered
+                    ? event.registrations.filter(reg => reg.userId !== session.user.id)
+                    : [...event.registrations, { userId: session.user.id }]
+            };
+
+            onRegistrationUpdate(optimisticEvent);
+
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
@@ -39,7 +49,6 @@ const EventCard = ({ event, isPast, onRegistrationUpdate }) => {
                 body: JSON.stringify({
                     eventId: event.id,
                 }),
-                cache: 'no-store',
             });
 
             if (!response.ok) {
@@ -48,6 +57,7 @@ const EventCard = ({ event, isPast, onRegistrationUpdate }) => {
             }
 
             const updatedEvent = await response.json();
+
             onRegistrationUpdate(updatedEvent);
 
             toast.success(isUserRegistered ?
@@ -55,6 +65,7 @@ const EventCard = ({ event, isPast, onRegistrationUpdate }) => {
                 "Successfully registered for event"
             );
         } catch (error) {
+            onRegistrationUpdate(event);
             toast.error(error.message);
         } finally {
             setIsLoading(false);
@@ -106,45 +117,25 @@ const EventCard = ({ event, isPast, onRegistrationUpdate }) => {
                         }
                     </Button>
                 )}
-                <EventInfoPopover creator={event.creator} registrations={event.registrations} />
+                <EventInfoPopover creator={event.creator || {}} registrations={event.registrations || []} />
             </CardFooter>
         </Card>
     );
 };
 
 const EventsSection = ({ type }) => {
-    const [events, setEvents] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        fetchEvents();
-    }, [type]);
-
-    const fetchEvents = async () => {
-        try {
-            const response = await fetch(`/api/events/${type}`, { cache: 'no-store' });
-            if (!response.ok) throw new Error("Network response was not ok");
-            const data = await response.json();
-            setEvents(data);
-        } catch (error) {
-            console.error(`Error fetching ${type} events:`, error);
-            toast.error(`Failed to load ${type} events`);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { data: events, error, mutate } = useSWR(`/api/events/${type}`, fetcher)
 
     const handleRegistrationUpdate = (updatedEvent) => {
-        setEvents(currentEvents =>
-            currentEvents.map(event =>
-                event.id === updatedEvent.id ? updatedEvent : event
-            )
-        );
+        const optimisticData = events.map(event =>
+            event.id === updatedEvent.id ? updatedEvent : event
+        )
+
+        mutate(optimisticData, false)
     };
 
-    if (loading) {
-        return <PageLoader type="events" />
-    }
+    if (error) return <div>Failed to load events</div>
+    if (!events) return <PageLoader type="events" />
 
     return (
         <div className="grid gap-6 md:grid-cols-2">

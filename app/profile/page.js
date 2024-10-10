@@ -8,9 +8,12 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { toast } from 'sonner'
 import { PageLoader } from "@/components/PageLoader"
+import useSWR, { fetcher } from 'swr'
+
 
 export default function Component() {
-    const [user, setUser] = useState(null)
+    const { data, error, mutate } = useSWR('/api/user/profile', fetcher)
+    const [isLoading, setIsLoading] = useState(false)
     const [skills, setSkills] = useState({
         passing: 3,
         shooting: 3,
@@ -19,28 +22,12 @@ export default function Component() {
         positioning: 3,
         position: ''
     })
-    const [isLoading, setIsLoading] = useState(false)
-    const [isPageLoading, setIsPageLoading] = useState(true)
 
     useEffect(() => {
-        fetchUserData()
-    }, [])
-
-    const fetchUserData = async () => {
-        try {
-            const response = await fetch('/api/user/profile')
-            const data = await response.json()
-            setUser(data.user)
-            if (data.skills) {
-                setSkills(data.skills)
-            }
-        } catch (error) {
-            console.error('Error fetching user data:', error)
-            toast.error('Failed to load profile data')
-        } finally {
-            setIsPageLoading(false)
+        if (data?.skills) {
+            setSkills(data.skills)
         }
-    }
+    }, [data])
 
     const handleSkillChange = (skill, value) => {
         setSkills(prev => ({
@@ -66,7 +53,14 @@ export default function Component() {
                 },
                 body: JSON.stringify(skills),
             })
+
             if (!response.ok) throw new Error('Failed to save skills')
+
+            mutate({
+                ...data,
+                skills: skills
+            }, false)
+
             toast.success('Profile updated successfully')
         } catch (error) {
             console.error('Error saving skills:', error)
@@ -76,9 +70,8 @@ export default function Component() {
         }
     }
 
-    if (isPageLoading) {
-        return <PageLoader type="profile" />
-    }
+    if (error) return <div>Failed to load profile</div>
+    if (!data) return <PageLoader type="profile" />
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -92,11 +85,11 @@ export default function Component() {
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="name">Full Name</Label>
-                                <Input disabled id="name" value={user?.name || ''} />
+                                <Input disabled id="name" value={data.user?.name || ''} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
-                                <Input disabled id="email" value={user?.email || ''} type="email" />
+                                <Input disabled id="email" value={data.user?.email || ''} type="email" />
                             </div>
                         </CardContent>
                     </Card>

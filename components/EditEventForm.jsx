@@ -35,7 +35,6 @@ export default function EditEventForm({
         description: event.description || "",
     });
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -55,7 +54,6 @@ export default function EditEventForm({
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
 
         try {
             const response = await fetch(
@@ -66,19 +64,14 @@ export default function EditEventForm({
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        name: formData.name,
-                        dateTime: formData.dateTime,
-                        location: formData.location,
-                        type: formData.type,
+                        ...formData,
                         maxPlayers: parseInt(formData.maxPlayers),
-                        description: formData.description,
                     }),
                 }
             );
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Failed to update event");
+                throw new Error("Failed to update event");
             }
 
             const updatedEvent = await response.json();
@@ -86,7 +79,7 @@ export default function EditEventForm({
             onClose();
             toast.success("Event updated successfully");
         } catch (error) {
-            setError(error.message);
+            console.error("Error updating event:", error);
             toast.error(error.message);
         } finally {
             setLoading(false);
@@ -110,14 +103,12 @@ export default function EditEventForm({
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="date">Date and Time</Label>
+                        <Label htmlFor="dateTime">Date and Time</Label>
                         <Input
                             id="dateTime"
-                            name="dateTime"
                             type="datetime-local"
                             value={formData.dateTime}
                             onChange={handleChange}
-                            required
                         />
                     </div>
                     <div className="space-y-2">
@@ -156,7 +147,6 @@ export default function EditEventForm({
                             type="number"
                             value={formData.maxPlayers}
                             onChange={handleChange}
-                            placeholder="e.g. 12"
                         />
                     </div>
                     <div className="space-y-2">
@@ -165,11 +155,9 @@ export default function EditEventForm({
                             id="description"
                             value={formData.description}
                             onChange={handleChange}
-                            placeholder="Provide any additional details about the event..."
-                            rows={2}
+                            rows={3}
                         />
                     </div>
-                    {error && <p className="text-red-500">{error}</p>}
                     <Button type="submit" className="w-full" disabled={loading}>
                         {loading ? "Updating..." : "Update Event"}
                     </Button>

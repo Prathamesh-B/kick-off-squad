@@ -22,7 +22,26 @@ export async function POST(request) {
 
         const updatedEvent = await prisma.event.findUnique({
             where: { id: eventId },
-            include: { registrations: true },
+            include: {
+                registrations: {
+                    include: {
+                        user: {
+                            select: {
+                                name: true,
+                                email: true,
+                                image: true,
+                            },
+                        },
+                    },
+                },
+                creator: {
+                    select: {
+                        name: true,
+                        email: true,
+                        image: true,
+                    },
+                },
+            },
         });
 
         return new Response(JSON.stringify(updatedEvent), {

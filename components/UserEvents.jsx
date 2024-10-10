@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -14,41 +14,32 @@ import { PageLoader } from "@/components/PageLoader";
 import { Calendar, MapPin, Users, Edit, Trash } from "lucide-react";
 import EditEventForm from "./EditEventForm";
 import { toast } from "sonner";
+import useSWR, { fetcher } from 'swr'
 
 export default function UserEvents({ userId }) {
-    const [events, setEvents] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [editingEvent, setEditingEvent] = useState(null);
 
-    useEffect(() => {
-        fetchUserEvents();
-    }, [userId]);
-
-    const fetchUserEvents = async () => {
-        try {
-            const response = await fetch(
-                `/api/events/manage?userId=${encodeURIComponent(userId)}`
-            );
-            if (!response.ok) throw new Error("Failed to fetch events");
-            const data = await response.json();
-            setEvents(data);
-        } catch (error) {
-            console.error("Error fetching user events:", error);
-            toast.error("Failed to load your events");
-        } finally {
-            setLoading(false);
-        }
-    };
+    const {
+        data: events,
+        error,
+        mutate,
+    } = useSWR(
+        userId
+            ? `/api/events/manage?userId=${encodeURIComponent(userId)}`
+            : null,
+        fetcher
+    );
 
     const handleEdit = (event) => {
         setEditingEvent(event);
     };
 
     const handleEventUpdate = (updatedEvent) => {
-        setEvents(
+        mutate(
             events.map((event) =>
                 event.id === updatedEvent.id ? updatedEvent : event
-            )
+            ),
+            false
         );
     };
 
@@ -56,25 +47,33 @@ export default function UserEvents({ userId }) {
         if (!confirm("Are you sure you want to delete this event?")) return;
 
         try {
+            const optimisticEvents = events.filter(
+                (event) => event.id !== eventId
+            );
+            mutate(optimisticEvents, false);
+
             const response = await fetch(
                 `/api/events/manage/delete/${eventId}`,
                 {
                     method: "DELETE",
                 }
             );
-            if (!response.ok) throw new Error("Failed to delete event");
 
-            setEvents(events.filter((event) => event.id !== eventId));
+            if (!response.ok) {
+                throw new Error("Failed to delete event");
+            }
+
             toast.success("Event deleted successfully");
         } catch (error) {
+            // Revert optimistic update on error
+            mutate(); // This will trigger a revalidation
             console.error("Error deleting event:", error);
             toast.error("Failed to delete event");
         }
     };
 
-    if (loading) {
-        return <PageLoader type="events" />;
-    }
+    if (error) return <div>Failed to load events</div>;
+    if (!events) return <PageLoader type="events" />;
 
     return (
         <>
