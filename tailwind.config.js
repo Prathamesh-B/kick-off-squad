@@ -57,6 +57,8 @@ module.exports = {
 			},
 			backgroundImage: {
 				'hero-img': "url('/images/football-home-bg-min.jpg')",
+				'logo-svg': "url('/images/logo.svg')",
+				'logo-white-svg': "url('/images/logo-white.svg')",
 			}
 		}
 	},

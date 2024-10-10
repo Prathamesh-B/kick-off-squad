@@ -1,5 +1,10 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function PageLoader({ type = "default" }) {
     if (type === "events") {
@@ -14,7 +19,10 @@ export function PageLoader({ type = "default" }) {
                         <CardContent>
                             <div className="space-y-2">
                                 {[1, 2, 3].map((j) => (
-                                    <div key={j} className="flex items-center space-x-2">
+                                    <div
+                                        key={j}
+                                        className="flex items-center space-x-2"
+                                    >
                                         <Skeleton className="h-4 w-4" />
                                         <Skeleton className="h-4 w-3/4" />
                                     </div>
@@ -28,12 +36,12 @@ export function PageLoader({ type = "default" }) {
                     </Card>
                 ))}
             </div>
-        )
+        );
     }
 
     if (type === "profile") {
         return (
-            <div className="max-w-2xl mx-auto space-y-8 py-6">
+            <div className="max-w-2xl mx-auto space-y-8 py-6 px-4">
                 <Skeleton className="h-10 w-48" />
                 <Card>
                     <CardHeader>
@@ -71,10 +79,18 @@ export function PageLoader({ type = "default" }) {
                     </CardFooter>
                 </Card>
             </div>
-        )
+        );
     }
 
-    // Default loader
+    if (type === "navbar") {
+        return (
+            <div className="flex gap-4 items-center">
+                <Skeleton className="h-6 w-24" />
+                <Skeleton className="h-10 w-10 rounded-full" />
+            </div>
+        );
+    }
+
     return (
         <div className="max-w-4xl mx-auto space-y-8">
             <Skeleton className="h-10 w-48" />
@@ -89,5 +105,5 @@ export function PageLoader({ type = "default" }) {
                 </CardContent>
             </Card>
         </div>
-    )
+    );
 }

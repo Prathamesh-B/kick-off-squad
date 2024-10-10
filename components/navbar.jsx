@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SignIn } from "./auth/signin-button";
 import UserButton from "./user-button";
+import { PageLoader } from "./PageLoader";
 
 export default function Navbar() {
     const { data: session, status } = useSession();
@@ -13,17 +14,12 @@ export default function Navbar() {
     return (
         <header className="px-4 lg:px-6 h-14 flex items-center dark:bg-slate-900">
             <Link className="flex items-center justify-center" href="/">
-                <Image
-                    src="/images/logo.svg"
-                    alt="Kick-Off Squad"
-                    width={32}
-                    height={32}
-                />
+                <div className="w-8 h-8 bg-logo-svg bg-cover dark:bg-logo-white-svg"></div>
                 <span className="ml-2 text-lg font-bold">Kick-Off Squad</span>
             </Link>
             <nav className="ml-auto flex gap-4 sm:gap-6 items-center">
                 {status === "loading" ? (
-                    <div>Loading...</div>
+                    <PageLoader type="navbar" />
                 ) : user ? (
                     <>
                         <Link

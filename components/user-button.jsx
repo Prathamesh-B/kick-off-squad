@@ -62,15 +62,6 @@ export default function UserButton({ user }) {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                     <button
-                        onClick={() => signOut({ callbackUrl: "/" })}
-                        className="flex w-full items-center"
-                    >
-                        <LogOut className="mr-2 h-4 w-4" /> Log Out
-                    </button>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                    <button
                         onClick={() =>
                             setTheme(theme === "dark" ? "light" : "dark")
                         }
@@ -84,6 +75,15 @@ export default function UserButton({ user }) {
                         <span>
                             {theme === "dark" ? "Light Mode" : "Dark Mode"}
                         </span>
+                    </button>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                    <button
+                        onClick={() => signOut({ callbackUrl: "/" })}
+                        className="flex w-full items-center"
+                    >
+                        <LogOut className="mr-2 h-4 w-4" /> Log Out
                     </button>
                 </DropdownMenuItem>
             </DropdownMenuContent>
