@@ -27,7 +27,7 @@ export async function GET() {
             user: {
                 name: user.name,
                 email: user.email,
-                upiNumber: user.upiNumber,
+                upiId: user.upiId,
             },
             skills: user.skills
         }), {

@@ -14,7 +14,7 @@ model User {
   name          String
   email         String         @unique
   image         String?
-  upiNumber     String?
+  upiId         String?
   skills        Skill?
   events        Event[]
   registrations Registration[]

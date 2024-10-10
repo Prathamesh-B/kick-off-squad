@@ -11,18 +11,18 @@ export async function POST(request) {
             })
         }
 
-        const { upiNumber } = await request.json()
+        const { upiId } = await request.json()
 
         const updatedUser = await prisma.user.update({
             where: { email: session.user.email },
-            data: { upiNumber },
+            data: { upiId },
         })
 
         return new Response(JSON.stringify({
             user: {
                 name: updatedUser.name,
                 email: updatedUser.email,
-                upiNumber: updatedUser.upiNumber,
+                upiId: updatedUser.upiId,
             }
         }), {
             headers: { 'Content-Type': 'application/json' },

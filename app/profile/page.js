@@ -14,7 +14,7 @@ import useSWR from 'swr'
 export default function Component() {
     const { data, error, mutate } = useSWR('/api/user/profile')
     const [isLoading, setIsLoading] = useState(false)
-    const [upiNumber, setUpiNumber] = useState('')
+    const [upiId, setUpiId] = useState('')
     const [isUpiLoading, setIsUpiLoading] = useState(false)
     const [skills, setSkills] = useState({
         passing: 3,
@@ -29,13 +29,13 @@ export default function Component() {
         if (data?.skills) {
             setSkills(data.skills)
         }
-        if (data?.user?.upiNumber) {
-            setUpiNumber(data.user.upiNumber)
+        if (data?.user?.upiId) {
+            setUpiId(data.user.upiId)
         }
     }, [data])
 
     const handleUpiChange = (e) => {
-        setUpiNumber(e.target.value)
+        setUpiId(e.target.value)
     }
 
     const handleSkillChange = (skill, value) => {
@@ -87,23 +87,23 @@ export default function Component() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ upiNumber }),
+                body: JSON.stringify({ upiId }),
             })
 
-            if (!response.ok) throw new Error('Failed to save UPI number')
+            if (!response.ok) throw new Error('Failed to save UPI Id')
 
             mutate({
                 ...data,
                 user: {
                     ...data.user,
-                    upiNumber
+                    upiId
                 }
             }, false)
 
-            toast.success('UPI number updated successfully')
+            toast.success('UPI Id updated successfully')
         } catch (error) {
-            console.error('Error saving UPI number:', error)
-            toast.error('Failed to save UPI number')
+            console.error('Error saving UPI Id:', error)
+            toast.error('Failed to save UPI Id')
         } finally {
             setIsUpiLoading(false)
         }
@@ -131,13 +131,13 @@ export default function Component() {
                                 <Input disabled id="email" value={data.user?.email || ''} type="email" />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="upiNumber">UPI Number</Label>
+                                <Label htmlFor="upiId">UPI Id</Label>
                                 <div className="flex space-x-2">
                                     <Input
-                                        id="upiNumber"
-                                        value={upiNumber}
+                                        id="upiId"
+                                        value={upiId}
                                         onChange={handleUpiChange}
-                                        placeholder="Enter your UPI number"
+                                        placeholder="Enter your UPI Id Eg. pratham1coc@okhdfcbank"
                                     />
                                     <Button
                                         onClick={handleUpiSave}

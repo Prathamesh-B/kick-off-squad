@@ -90,7 +90,7 @@ export default function CreateEventForm({ userId }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!profileData?.user?.upiNumber) {
+        if (!profileData?.user?.upiId) {
             setShowUpiDialog(true);
             return;
         }
@@ -138,14 +138,14 @@ export default function CreateEventForm({ userId }) {
         <main className="px-4 md:px-6">
             <div className="mx-auto space-y-4">
                 <h1 className="text-2xl font-bold">Create New Event</h1>
-                {profileData?.user?.upiNumber ? (
+                {profileData?.user?.upiId ? (
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm text-gray-500">
-                                Your UPI Number
+                                Your UPI Id
                             </p>
                             <p className="font-medium">
-                                {profileData.user.upiNumber}
+                                {profileData.user.upiId}
                             </p>
                         </div>
                         <Button
@@ -159,7 +159,7 @@ export default function CreateEventForm({ userId }) {
                     <Alert variant="warning">
                         <AlertCircle className="h-4 w-4" />
                         <AlertDescription className="mt-1">
-                            You need to set up your UPI number before creating
+                            You need to set up your UPI Id before creating
                             events.
                             <Button
                                 variant="link"
@@ -311,7 +311,7 @@ export default function CreateEventForm({ userId }) {
                                 type="submit"
                                 className="w-full"
                                 disabled={
-                                    loading || !profileData?.user?.upiNumber
+                                    loading || !profileData?.user?.upiId
                                 }
                             >
                                 {loading ? "Creating..." : "Create Event"}
@@ -325,9 +325,7 @@ export default function CreateEventForm({ userId }) {
                     <DialogHeader>
                         <DialogTitle>UPI Setup Required</DialogTitle>
                         <DialogDescription>
-                            To create an event, you need to set up your UPI
-                            number first. This helps with managing payments for
-                            your events.
+                            To create an event, you need to set up your UPI Id first. This helps with managing payments for your events.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
