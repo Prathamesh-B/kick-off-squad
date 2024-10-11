@@ -39,6 +39,7 @@ export async function POST(request) {
                         name: true,
                         email: true,
                         image: true,
+                        upiId: true,
                     },
                 },
             },

@@ -18,7 +18,24 @@ export async function GET(req) {
     try {
         const events = await prisma.event.findMany({
             where: { creatorId: parseInt(userId) },
-            include: { creator: true, registrations: true, result: true }
+            include: {
+                creator: true,
+                registrations: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true,
+                                image: true,
+                                skills: true,
+                            },
+                        },
+                    },
+                },
+                result: true
+            },
+            orderBy: { dateTime: 'desc' },
         })
         return new Response(JSON.stringify(events), {
             status: 200, headers: {

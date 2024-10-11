@@ -14,6 +14,7 @@ import { PageLoader } from "@/components/PageLoader";
 import { Calendar, MapPin, Users, Edit, Trash } from "lucide-react";
 import EditEventForm from "./EditEventForm";
 import DeclareResultForm from "./DeclareResultForm";
+import TeamManager from "./TeamManager";
 import { toast } from "sonner";
 import useSWR from "swr";
 import { formatDateTime } from "@/lib/formatDateTime";
@@ -21,6 +22,7 @@ import { formatDateTime } from "@/lib/formatDateTime";
 export default function UserEvents({ userId }) {
     const [editingEvent, setEditingEvent] = useState(null);
     const [declaringResult, setDeclaringResult] = useState(null);
+    const [showTeams, setShowTeams] = useState({});
 
     const {
         data: events,
@@ -72,6 +74,13 @@ export default function UserEvents({ userId }) {
         }
     };
 
+    const toggleTeams = (eventId) => {
+        setShowTeams((prev) => ({
+            ...prev,
+            [eventId]: !prev[eventId],
+        }));
+    };
+
     const isPastEvent = (event) => {
         return new Date(event.dateTime) < new Date();
     };
@@ -113,37 +122,80 @@ export default function UserEvents({ userId }) {
                                     </span>
                                 </div>
                             </CardContent>
-                            <CardFooter className="flex justify-between flex-wrap gap-2">
-                                <Button
-                                    variant="outline"
-                                    onClick={() => handleEdit(event)}
-                                >
-                                    <Edit className="w-4 h-4 mr-2" />
-                                    Edit
-                                </Button>
-                                {isPastEvent(event) && !event.result && (
+                            <CardFooter className="flex flex-col gap-4">
+                                <div className="flex justify-between flex-wrap gap-2 w-full">
                                     <Button
                                         variant="outline"
-                                        onClick={() =>
-                                            setDeclaringResult(event)
-                                        }
+                                        onClick={() => handleEdit(event)}
                                     >
-                                        Declare Result
+                                        <Edit className="w-4 h-4 mr-2" />
+                                        Edit
                                     </Button>
-                                )}
-                                {event.result && (
-                                    <div className="text-sm">
-                                        Result: {event.result.team1Score} -{" "}
-                                        {event.result.team2Score}
+                                    {!isPastEvent(event) && (
+                                        <>
+                                            <Button
+                                                variant="outline"
+                                                onClick={() =>
+                                                    toggleTeams(event.id)
+                                                }
+                                            >
+                                                Manage Teams
+                                            </Button>
+                                            {showTeams[event.id] && (
+                                                <TeamManager
+                                                    event={event}
+                                                    isOpen={showTeams[event.id]}
+                                                    onClose={() =>
+                                                        toggleTeams(event.id)
+                                                    }
+                                                />
+                                            )}
+                                        </>
+                                    )}
+                                    {isPastEvent(event) && !event.result && (
+                                        <Button
+                                            variant="outline"
+                                            onClick={() =>
+                                                setDeclaringResult(event)
+                                            }
+                                        >
+                                            Declare Result
+                                        </Button>
+                                    )}
+                                    {event.result && (
+                                        <div className="text-sm">
+                                            Result: {event.result.team1Score} -{" "}
+                                            {event.result.team2Score}
+                                        </div>
+                                    )}
+                                    <Button
+                                        variant="destructive"
+                                        onClick={() => handleDelete(event.id)}
+                                    >
+                                        <Trash className="w-4 h-4 mr-2" />
+                                        Delete
+                                    </Button>
+                                </div>
+                                {showTeams[event.id] && !isPastEvent(event) && (
+                                    <div className="w-full">
+                                        <TeamManager
+                                            event={event}
+                                            isOpen={showTeams[event.id]}
+                                            onClose={() => toggleTeams(event.id)}
+                                            onTeamsUpdate={(teams) => {
+                                                const updatedEvent = {
+                                                    ...event,
+                                                    registrations: event.registrations.map(reg => ({
+                                                        ...reg,
+                                                        team: teams.team1.find(p => p.userId === reg.user.id) ? 1 :
+                                                            teams.team2.find(p => p.userId === reg.user.id) ? 2 : reg.team
+                                                    }))
+                                                };
+                                                handleEventUpdate(updatedEvent);
+                                            }}
+                                        />
                                     </div>
                                 )}
-                                <Button
-                                    variant="destructive"
-                                    onClick={() => handleDelete(event.id)}
-                                >
-                                    <Trash className="w-4 h-4 mr-2" />
-                                    Delete
-                                </Button>
                             </CardFooter>
                         </Card>
                     ))

@@ -63,6 +63,9 @@ model Registration {
   createdAt DateTime           @default(now())
   status    RegistrationStatus @default(REGISTERED)
   team      Int?
+
+  @@unique([userId, eventId])
+  @@index([team])
 }
 
 enum RegistrationStatus {
