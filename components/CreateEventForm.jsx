@@ -301,7 +301,8 @@ export default function CreateEventForm({ userId }) {
                                     value={formData.description}
                                     onChange={handleChange}
                                     placeholder="Add event details. For fees, use formats like ₹500, Rs 500, or 500/-"
-                                    rows={4}
+                                    rows={2}
+                                    maxLength={100}
                                 />
                             </div>
                             {error && <p className="text-red-500">{error}</p>}

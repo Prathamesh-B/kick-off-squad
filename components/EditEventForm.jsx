@@ -157,7 +157,8 @@ export default function EditEventForm({
                             id="description"
                             value={formData.description}
                             onChange={handleChange}
-                            rows={3}
+                            rows={2}
+                            maxLength={100}
                         />
                     </div>
                     <Button type="submit" className="w-full" disabled={loading}>

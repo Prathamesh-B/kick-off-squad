@@ -89,8 +89,8 @@ export default function Component() {
                 },
                 body: JSON.stringify({ upiId }),
             })
-
-            if (!response.ok) throw new Error('Failed to save UPI Id')
+            if (response.status === 400) throw new Error('Invalid UPI ID format')
+            else if (!response.ok) throw new Error('Failed to save UPI Id')
 
             mutate({
                 ...data,
@@ -102,8 +102,8 @@ export default function Component() {
 
             toast.success('UPI Id updated successfully')
         } catch (error) {
-            console.error('Error saving UPI Id:', error)
-            toast.error('Failed to save UPI Id')
+            console.error("Error updating event:", error);
+            toast.error(error.message);
         } finally {
             setIsUpiLoading(false)
         }

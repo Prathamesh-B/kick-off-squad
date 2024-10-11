@@ -27,9 +27,9 @@ export default function TeamPlayersPopover({ registrations }) {
                     <UsersRound className="h-4 w-4" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-fit flex justify-between shadow-lg rounded-lg">
+            <PopoverContent className="w-fit" align="end" alignOffset={-20}>
                 {team1Players.length > 0 && team2Players.length > 0 ? (
-                    <div className="grid md:grid-cols-2 gap-1">
+                    <div className="grid grid-cols-2 gap-1">
                         <div className="pr-1 border-r border-slate-200 dark:border-slate-800">
                             <h3 className="font-bold mb-2">
                                 Team 1 ({team1Players.length} players)
