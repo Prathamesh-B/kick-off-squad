@@ -19,19 +19,19 @@ import { toast } from "sonner";
 import useSWR from "swr";
 import { formatDateTime } from "@/lib/formatDateTime";
 import EventInfoPopover from "./EventInfoPopover";
+import Pagination from "./Pagination";
 
 export default function UserEvents({ userId }) {
     const [editingEvent, setEditingEvent] = useState(null);
     const [declaringResult, setDeclaringResult] = useState(null);
     const [showTeams, setShowTeams] = useState({});
+    const [currentPage, setCurrentPage] = useState(1);
 
-    const {
-        data: events,
-        error,
-        mutate,
-    } = useSWR(
+    const { data, error, mutate } = useSWR(
         userId
-            ? `/api/events/manage?userId=${encodeURIComponent(userId)}`
+            ? `/api/events/manage?userId=${encodeURIComponent(
+                  userId
+              )}&page=${currentPage}&limit=6`
             : null
     );
 
@@ -41,7 +41,7 @@ export default function UserEvents({ userId }) {
 
     const handleEventUpdate = (updatedEvent) => {
         mutate(
-            events.map((event) =>
+            data.events.map((event) =>
                 event.id === updatedEvent.id ? updatedEvent : event
             ),
             false
@@ -64,10 +64,10 @@ export default function UserEvents({ userId }) {
             }
 
             toast.success("Event deleted successfully");
-            const optimisticEvents = events.filter(
+            const optimisticEvents = data.events.filter(
                 (event) => event.id !== eventId
             );
-            mutate(optimisticEvents, false);
+            mutate({ ...data, events: optimisticEvents }, false);
         } catch (error) {
             mutate();
             console.error("Error deleting event:", error);
@@ -87,7 +87,9 @@ export default function UserEvents({ userId }) {
     };
 
     if (error) return <div>Failed to load events</div>;
-    if (!events) return <PageLoader type="events" />;
+    if (!data) return <PageLoader type="events" />;
+
+    const { events, totalPages } = data;
 
     return (
         <>
@@ -230,6 +232,13 @@ export default function UserEvents({ userId }) {
                     ))
                 )}
             </div>
+            {totalPages > 1 && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                />
+            )}
             {editingEvent && (
                 <EditEventForm
                     event={editingEvent}
@@ -249,7 +258,7 @@ export default function UserEvents({ userId }) {
                                 ? { ...event, result: result }
                                 : event
                         );
-                        mutate(updatedEvents, false);
+                        mutate({ ...data, events: updatedEvents }, false);
                         setDeclaringResult(null);
                     }}
                 />

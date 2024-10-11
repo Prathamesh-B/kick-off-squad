@@ -1,38 +1,64 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import useSWR from 'swr'
 import EventCard from "@/components/EventCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageLoader } from "@/components/PageLoader";
+import Pagination from "@/components/Pagination";
 
 
 const EventsSection = ({ type }) => {
-    const { data: events, error, mutate } = useSWR(`/api/events/${type}`)
+    const [currentPage, setCurrentPage] = useState(1);
+    const { data, error, mutate } = useSWR(
+        `/api/events/${type}?page=${currentPage}&limit=6`
+    );
+
+    useEffect(() => {
+        mutate();
+    }, [currentPage, mutate]);
 
     const handleRegistrationUpdate = (updatedEvent) => {
-        const optimisticData = events.map(event =>
-            event.id === updatedEvent.id ? updatedEvent : event
-        )
+        if (!data) return;
 
-        mutate(optimisticData, false)
+        const optimisticData = {
+            ...data,
+            events: data.events.map(event =>
+                event.id === updatedEvent.id ? updatedEvent : event
+            )
+        };
+
+        mutate(optimisticData, false);
     };
 
     if (error) return <div>Failed to load events</div>
-    if (!events) return <PageLoader type="events" />
+    if (!data) return <PageLoader type="events" />
+
+    const { events, totalPages } = data;
 
     return (
-        <div className="grid gap-6 md:grid-cols-2">
-            {events.length === 0 ? (
-                <p>No {type} events found.</p>
-            ) : (
-                events.map(event => (
-                    <EventCard
-                        key={event.id}
-                        event={event}
-                        isPast={type === 'past'}
-                        onRegistrationUpdate={handleRegistrationUpdate}
-                    />
-                ))
+        <div className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+                {events.length === 0 ? (
+                    <p>No {type} events found.</p>
+                ) : (
+                    events.map(event => (
+                        <EventCard
+                            key={event.id}
+                            event={event}
+                            isPast={type === 'past'}
+                            onRegistrationUpdate={handleRegistrationUpdate}
+                        />
+                    ))
+                )}
+            </div>
+
+            {totalPages > 1 && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                />
             )}
         </div>
     );
