@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
@@ -138,6 +139,9 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
             <DialogContent className="max-w-4xl p-4 sm:p-6 lg:p-8 overflow-auto max-h-screen">
                 <DialogHeader>
                     <DialogTitle>Manage Teams - {event.name}</DialogTitle>
+                    <DialogDescription>
+                        Manage your teams for this event
+                    </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                     <Button

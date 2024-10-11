@@ -121,7 +121,9 @@ export default function UserEvents({ userId }) {
                                         {event.registrations?.length || 0}/
                                         {event.maxPlayers} players registered
                                     </span>
-                                    <EventInfoPopover registrations={event.registrations} />
+                                    <EventInfoPopover
+                                        registrations={event.registrations}
+                                    />
                                 </div>
                             </CardContent>
                             <CardFooter className="flex flex-col gap-4">
@@ -139,6 +141,10 @@ export default function UserEvents({ userId }) {
                                                 variant="outline"
                                                 onClick={() =>
                                                     toggleTeams(event.id)
+                                                }
+                                                disabled={
+                                                    event.registrations
+                                                        ?.length < 2
                                                 }
                                             >
                                                 <Users className="w-4 h-4 mr-2" />

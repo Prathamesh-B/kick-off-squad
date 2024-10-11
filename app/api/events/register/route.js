@@ -67,6 +67,7 @@ export async function POST(request) {
                     include: {
                         user: {
                             select: {
+                                id: true,
                                 name: true,
                                 email: true,
                                 image: true,

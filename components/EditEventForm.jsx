@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
@@ -93,6 +94,9 @@ export default function EditEventForm({
             <DialogContent className="max-w-md">
                 <DialogHeader>
                     <DialogTitle>Edit Event</DialogTitle>
+                    <DialogDescription>
+                        Edit the details of the event.
+                    </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
