@@ -6,11 +6,11 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
+    DialogDescription
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { DialogDescription } from "@radix-ui/react-dialog";
 
 export default function DeclareResultForm({
     event,
@@ -59,7 +59,7 @@ export default function DeclareResultForm({
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Declare Result for {event.name}</DialogTitle>
-                    <DialogDescription className="text-sm text-muted-foreground">
+                    <DialogDescription>
                         You <strong>cannot change</strong> the result once it has been declared
                     </DialogDescription>
                 </DialogHeader>
