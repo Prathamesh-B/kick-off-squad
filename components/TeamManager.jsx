@@ -72,11 +72,9 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
     const movePlayer = async (playerId, fromTeam, toTeam) => {
         if (!playerId) return;
 
-        // Store original teams for reverting if needed
         const originalTeam1 = [...team1];
         const originalTeam2 = [...team2];
 
-        // Create new copies of both teams
         let newTeam1 = [...team1];
         let newTeam2 = [...team2];
 
@@ -99,7 +97,6 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
                 }
             }
 
-            // Update state immediately for UI responsiveness
             setTeam1(newTeam1);
             setTeam2(newTeam2);
 
@@ -119,7 +116,6 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
 
             const updatedData = await response.json();
 
-            // Update with server response
             setTeam1(updatedData.team1);
             setTeam2(updatedData.team2);
 
@@ -131,7 +127,6 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
                 });
         } catch (error) {
             console.error("Error moving player:", error);
-            // Revert to original teams
             setTeam1(originalTeam1);
             setTeam2(originalTeam2);
             toast.error("Failed to update teams");
@@ -140,16 +135,20 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-4xl">
+            <DialogContent className="max-w-4xl p-4 sm:p-6 lg:p-8 overflow-auto max-h-screen">
                 <DialogHeader>
                     <DialogTitle>Manage Teams - {event.name}</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
-                    <Button onClick={generateTeams} disabled={isLoading}>
+                    <Button
+                        onClick={generateTeams}
+                        disabled={isLoading}
+                        className="w-full"
+                    >
                         {isLoading ? "Generating..." : "Regenerate Teams"}
                     </Button>
 
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid md:grid-cols-2 gap-1">
                         <div className="border p-4 rounded-lg">
                             <h3 className="font-bold mb-2">
                                 Team 1 ({team1.length} players)
@@ -157,7 +156,7 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
                             {team1.map((player) => (
                                 <div
                                     key={player.userId}
-                                    className="flex justify-between items-center bg-white p-2 mb-2 rounded shadow"
+                                    className="flex justify-between items-center bg-white dark:bg-slate-900 p-2 mb-2 rounded shadow"
                                 >
                                     <span>
                                         {player.name} - {player.position}
@@ -165,13 +164,9 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
                                     <Button
                                         size="sm"
                                         variant="secondary"
-                                        onClick={() => {
-                                            console.log(
-                                                "Moving player from Team 1 to 2:",
-                                                player
-                                            );
-                                            movePlayer(player.userId, 1, 2);
-                                        }}
+                                        onClick={() =>
+                                            movePlayer(player.userId, 1, 2)
+                                        }
                                     >
                                         Move to Team 2
                                     </Button>
@@ -185,7 +180,7 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
                             {team2.map((player) => (
                                 <div
                                     key={player.userId}
-                                    className="flex justify-between items-center bg-white p-2 mb-2 rounded shadow"
+                                    className="flex justify-between items-center bg-white dark:bg-slate-900 p-2 mb-2 rounded shadow"
                                 >
                                     <span>
                                         {player.name} - {player.position}
@@ -193,13 +188,9 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
                                     <Button
                                         size="sm"
                                         variant="secondary"
-                                        onClick={() => {
-                                            console.log(
-                                                "Moving player from Team 2 to 1:",
-                                                player
-                                            );
-                                            movePlayer(player.userId, 2, 1);
-                                        }}
+                                        onClick={() =>
+                                            movePlayer(player.userId, 2, 1)
+                                        }
                                     >
                                         Move to Team 1
                                     </Button>

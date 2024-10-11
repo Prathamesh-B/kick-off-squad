@@ -11,7 +11,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { PageLoader } from "@/components/PageLoader";
-import { Calendar, MapPin, Users, Edit, Trash } from "lucide-react";
+import { Calendar, MapPin, Users, Edit, Trash, Trophy } from "lucide-react";
 import EditEventForm from "./EditEventForm";
 import DeclareResultForm from "./DeclareResultForm";
 import TeamManager from "./TeamManager";
@@ -139,7 +139,8 @@ export default function UserEvents({ userId }) {
                                                     toggleTeams(event.id)
                                                 }
                                             >
-                                                Manage Teams
+                                                <Users className="w-4 h-4 mr-2" />
+                                                Teams
                                             </Button>
                                             {showTeams[event.id] && (
                                                 <TeamManager
@@ -159,14 +160,15 @@ export default function UserEvents({ userId }) {
                                                 setDeclaringResult(event)
                                             }
                                         >
-                                            Declare Result
+                                            <Trophy className="w-4 h-4 mr-2" />
+                                            Result
                                         </Button>
                                     )}
                                     {event.result && (
-                                        <div className="text-sm">
+                                        <span className="mt-1">
                                             Result: {event.result.team1Score} -{" "}
                                             {event.result.team2Score}
-                                        </div>
+                                        </span>
                                     )}
                                     <Button
                                         variant="destructive"
@@ -181,15 +183,34 @@ export default function UserEvents({ userId }) {
                                         <TeamManager
                                             event={event}
                                             isOpen={showTeams[event.id]}
-                                            onClose={() => toggleTeams(event.id)}
+                                            onClose={() =>
+                                                toggleTeams(event.id)
+                                            }
                                             onTeamsUpdate={(teams) => {
                                                 const updatedEvent = {
                                                     ...event,
-                                                    registrations: event.registrations.map(reg => ({
-                                                        ...reg,
-                                                        team: teams.team1.find(p => p.userId === reg.user.id) ? 1 :
-                                                            teams.team2.find(p => p.userId === reg.user.id) ? 2 : reg.team
-                                                    }))
+                                                    registrations:
+                                                        event.registrations.map(
+                                                            (reg) => ({
+                                                                ...reg,
+                                                                team: teams.team1.find(
+                                                                    (p) =>
+                                                                        p.userId ===
+                                                                        reg.user
+                                                                            .id
+                                                                )
+                                                                    ? 1
+                                                                    : teams.team2.find(
+                                                                          (p) =>
+                                                                              p.userId ===
+                                                                              reg
+                                                                                  .user
+                                                                                  .id
+                                                                      )
+                                                                    ? 2
+                                                                    : reg.team,
+                                                            })
+                                                        ),
                                                 };
                                                 handleEventUpdate(updatedEvent);
                                             }}

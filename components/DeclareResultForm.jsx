@@ -1,12 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
-export default function DeclareResultForm({ event, isOpen, onClose, onResultDeclared }) {
+export default function DeclareResultForm({
+    event,
+    isOpen,
+    onClose,
+    onResultDeclared,
+}) {
     const [team1Score, setTeam1Score] = useState(0);
     const [team2Score, setTeam2Score] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,11 +59,17 @@ export default function DeclareResultForm({ event, isOpen, onClose, onResultDecl
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Declare Result for {event.name}</DialogTitle>
+                    <DialogDescription className="text-sm text-muted-foreground">
+                        You <strong>cannot change</strong> the result once it has been declared
+                    </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="flex items-center space-x-4">
                         <div className="flex-1">
-                            <label htmlFor="team1Score" className="block text-sm font-medium">
+                            <label
+                                htmlFor="team1Score"
+                                className="block text-sm font-medium"
+                            >
                                 Team 1 Score
                             </label>
                             <Input
@@ -65,7 +82,10 @@ export default function DeclareResultForm({ event, isOpen, onClose, onResultDecl
                             />
                         </div>
                         <div className="flex-1">
-                            <label htmlFor="team2Score" className="block text-sm font-medium">
+                            <label
+                                htmlFor="team2Score"
+                                className="block text-sm font-medium"
+                            >
                                 Team 2 Score
                             </label>
                             <Input
