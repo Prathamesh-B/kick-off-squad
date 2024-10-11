@@ -15,26 +15,7 @@ export async function POST(request) {
 
         const event = await prisma.event.findUnique({
             where: { id: eventId },
-            include: {
-                registrations: {
-                    include: {
-                        user: {
-                            select: {
-                                name: true,
-                                email: true,
-                                image: true,
-                            },
-                        },
-                    },
-                },
-                creator: {
-                    select: {
-                        name: true,
-                        email: true,
-                        image: true,
-                    },
-                },
-            },
+            include: { registrations: true },
         });
 
         if (!event) {
@@ -81,7 +62,27 @@ export async function POST(request) {
 
         const updatedEvent = await prisma.event.findUnique({
             where: { id: eventId },
-            include: { registrations: true },
+            include: {
+                registrations: {
+                    include: {
+                        user: {
+                            select: {
+                                name: true,
+                                email: true,
+                                image: true,
+                            },
+                        },
+                    },
+                },
+                creator: {
+                    select: {
+                        name: true,
+                        email: true,
+                        image: true,
+                        upiId: true,
+                    },
+                },
+            },
         });
 
         return new Response(JSON.stringify(updatedEvent), {

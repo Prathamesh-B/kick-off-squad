@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Info } from "lucide-react";
 import {
     Popover,
@@ -8,44 +7,46 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function EventInfoPopover({ creator, registrations }) {
-    const safeCreator = creator || { name: 'Unknown', email: '', image: '' };
+    const safeCreator = creator || { name: "Unknown", email: "", image: "" };
     const safeRegistrations = registrations || [];
 
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="ml-1 p-0">
-                    <Info className="h-4 w-4" />
-                </Button>
+                <Info className="h-4 w-4 pt-0.5 hover:cursor-pointer" />
             </PopoverTrigger>
             <PopoverContent className="w-80" align="end">
                 <div className="space-y-4">
-                    <div>
+                    { creator && <div>
                         <h4 className="font-semibold mb-2">Creator</h4>
                         <div className="flex items-center space-x-2">
                             <Avatar>
                                 <AvatarImage src={safeCreator.image} />
                                 <AvatarFallback>
-                                    {safeCreator.name?.[0] || '?'}
+                                    {safeCreator.name?.[0] || "?"}
                                 </AvatarFallback>
                             </Avatar>
                             <div>
                                 <p className="text-sm font-medium">
-                                    {safeCreator.name || 'Unknown'}
+                                    {safeCreator.name || "Unknown"}
                                 </p>
                                 <p className="text-xs text-gray-500">
-                                    {safeCreator.email || 'No email'}
+                                    {safeCreator.email || "No email"}
                                 </p>
                             </div>
                         </div>
-                    </div>
+                    </div>}
                     <div>
                         <h4 className="font-semibold mb-2">
                             Registered Players ({safeRegistrations.length})
                         </h4>
                         <div className="space-y-2 max-h-40 overflow-y-auto">
                             {safeRegistrations.map((reg) => {
-                                const user = reg.user || { name: 'Unknown', email: '', image: '' };
+                                const user = reg.user || {
+                                    name: "Unknown",
+                                    email: "",
+                                    image: "",
+                                };
                                 return (
                                     <div
                                         key={user.id || Math.random()}
@@ -54,15 +55,15 @@ export default function EventInfoPopover({ creator, registrations }) {
                                         <Avatar>
                                             <AvatarImage src={user.image} />
                                             <AvatarFallback>
-                                                {user.name?.[0] || '?'}
+                                                {user.name?.[0] || "?"}
                                             </AvatarFallback>
                                         </Avatar>
                                         <div>
                                             <p className="text-sm font-medium">
-                                                {user.name || 'Unknown'}
+                                                {user.name || "Unknown"}
                                             </p>
                                             <p className="text-xs text-gray-500">
-                                                {user.email || 'No email'}
+                                                {user.email || "No email"}
                                             </p>
                                         </div>
                                     </div>

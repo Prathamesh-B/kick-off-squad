@@ -18,6 +18,7 @@ import TeamManager from "./TeamManager";
 import { toast } from "sonner";
 import useSWR from "swr";
 import { formatDateTime } from "@/lib/formatDateTime";
+import EventInfoPopover from "./EventInfoPopover";
 
 export default function UserEvents({ userId }) {
     const [editingEvent, setEditingEvent] = useState(null);
@@ -120,6 +121,7 @@ export default function UserEvents({ userId }) {
                                         {event.registrations?.length || 0}/
                                         {event.maxPlayers} players registered
                                     </span>
+                                    <EventInfoPopover registrations={event.registrations} />
                                 </div>
                             </CardContent>
                             <CardFooter className="flex flex-col gap-4">

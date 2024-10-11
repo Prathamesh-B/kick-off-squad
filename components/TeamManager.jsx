@@ -158,7 +158,7 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
                                     key={player.userId}
                                     className="flex justify-between items-center bg-white dark:bg-slate-900 p-2 mb-2 rounded shadow"
                                 >
-                                    <span>
+                                    <span className="text-sm">
                                         {player.name} - {player.position}
                                     </span>
                                     <Button
@@ -182,7 +182,7 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
                                     key={player.userId}
                                     className="flex justify-between items-center bg-white dark:bg-slate-900 p-2 mb-2 rounded shadow"
                                 >
-                                    <span>
+                                    <span className="text-sm">
                                         {player.name} - {player.position}
                                     </span>
                                     <Button
