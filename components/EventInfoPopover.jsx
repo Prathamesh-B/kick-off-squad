@@ -15,7 +15,7 @@ export default function EventInfoPopover({ creator, registrations }) {
             <PopoverTrigger asChild>
                 <Info className="h-4 w-4 pt-0.5 hover:cursor-pointer" />
             </PopoverTrigger>
-            <PopoverContent className="w-80" align="end">
+            <PopoverContent className="w-80" align="center">
                 <div className="space-y-4">
                     { creator && <div>
                         <h4 className="font-semibold mb-2">Creator</h4>

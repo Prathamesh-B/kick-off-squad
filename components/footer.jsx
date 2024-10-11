@@ -5,7 +5,7 @@ export default function Footer() {
                 © 2024 Kick-Off Squad. All rights reserved.
             </p>
             <p className="text-xs text-gray-500">
-                Developed by Prathamesh Bhalekar ⚽
+                Designed & Developed by Prathamesh Bhalekar ⚽
             </p>
         </footer>
     );
