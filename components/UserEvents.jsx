@@ -89,14 +89,15 @@ export default function UserEvents({ userId }) {
     if (error) return <div>Failed to load events</div>;
     if (!data) return <PageLoader type="events" />;
 
-    const { events, totalPages } = data;
+    const { events = [], totalPages } = data || {};
 
     return (
         <>
             <div className="grid gap-6 md:grid-cols-2">
-                {events.length === 0 ? (
+                {events && events.length === 0 ? (
                     <p>You haven&apos;t created any events yet.</p>
                 ) : (
+                    events &&
                     events.map((event) => (
                         <Card key={event.id}>
                             <CardHeader>
@@ -196,33 +197,18 @@ export default function UserEvents({ userId }) {
                                             onClose={() =>
                                                 toggleTeams(event.id)
                                             }
-                                            onTeamsUpdate={(teams) => {
-                                                const updatedEvent = {
-                                                    ...event,
-                                                    registrations:
-                                                        event.registrations.map(
-                                                            (reg) => ({
-                                                                ...reg,
-                                                                team: teams.team1.find(
-                                                                    (p) =>
-                                                                        p.userId ===
-                                                                        reg.user
-                                                                            .id
-                                                                )
-                                                                    ? 1
-                                                                    : teams.team2.find(
-                                                                          (p) =>
-                                                                              p.userId ===
-                                                                              reg
-                                                                                  .user
-                                                                                  .id
-                                                                      )
-                                                                    ? 2
-                                                                    : reg.team,
-                                                            })
-                                                        ),
-                                                };
-                                                handleEventUpdate(updatedEvent);
+                                            onTeamsUpdate={async () => {
+                                                try {
+                                                    await mutate();
+                                                } catch (error) {
+                                                    console.error(
+                                                        "Error updating teams:",
+                                                        error
+                                                    );
+                                                    toast.error(
+                                                        "Failed to update teams"
+                                                    );
+                                                }
                                             }}
                                         />
                                     </div>
