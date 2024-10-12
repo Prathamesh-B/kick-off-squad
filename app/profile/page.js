@@ -180,6 +180,7 @@ export default function Component() {
                                     placeholder="e.g. Striker, Midfielder"
                                     value={skills.position}
                                     onChange={handlePositionChange}
+                                    maxLength={10}
                                 />
                             </div>
                         </CardContent>

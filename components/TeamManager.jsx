@@ -10,11 +10,50 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import { RefreshCw } from "lucide-react";
+
+const PlayerCard = ({ player, onMove, isMoving, toTeam }) => (
+    <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-3 mb-2 rounded-lg shadow-md transition-all">
+        <div>
+            <span className="text-sm font-medium">{player.name}</span>
+            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full ml-2">
+                {player.position}
+            </span>
+        </div>
+        <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => onMove(player.userId)}
+            disabled={isMoving}
+        >
+            Move to Team {toTeam}
+        </Button>
+    </div>
+);
+
+const TeamList = ({ teamNumber, players, onMovePlayer, isMoving }) => (
+    <div className="border p-4 rounded-lg">
+        <h3 className="font-bold mb-3 text-lg">
+            Team {teamNumber} ({players.length} players)
+        </h3>
+        {players.map((player) => (
+            <PlayerCard
+                key={player.userId}
+                player={player}
+                onMove={(playerId) => onMovePlayer(playerId, teamNumber, teamNumber === 1 ? 2 : 1)}
+                isMoving={isMoving}
+                toTeam={teamNumber === 1 ? 2 : 1}
+            />
+        ))}
+    </div>
+);
 
 export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
     const [team1, setTeam1] = useState([]);
     const [team2, setTeam2] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isMoving, setIsMoving] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         if (isOpen) {
@@ -71,8 +110,9 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
     };
 
     const movePlayer = async (playerId, fromTeam, toTeam) => {
-        if (!playerId) return;
+        if (!playerId || isMoving) return;
 
+        setIsMoving(true);
         const originalTeam1 = [...team1];
         const originalTeam2 = [...team2];
 
@@ -121,21 +161,31 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
             setTeam2(updatedData.team2);
 
             toast.success("Player moved successfully");
-            onTeamsUpdate &&
-                onTeamsUpdate({
-                    team1: updatedData.team1,
-                    team2: updatedData.team2,
-                });
         } catch (error) {
             console.error("Error moving player:", error);
             setTeam1(originalTeam1);
             setTeam2(originalTeam2);
             toast.error("Failed to update teams");
+        } finally {
+            setIsMoving(false);
         }
     };
 
+    const handleClose = () => {
+        onTeamsUpdate && onTeamsUpdate();
+        onClose();
+    };
+
+    const filteredTeam1 = team1.filter(player =>
+        player.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const filteredTeam2 = team2.filter(player =>
+        player.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog open={isOpen} onOpenChange={handleClose}>
             <DialogContent className="max-w-4xl p-4 sm:p-6 lg:p-8 overflow-auto max-h-screen">
                 <DialogHeader>
                     <DialogTitle>Manage Teams - {event.name}</DialogTitle>
@@ -147,60 +197,24 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
                     <Button
                         onClick={generateTeams}
                         disabled={isLoading}
-                        className="w-full"
+                        className="w-48"
                     >
+                        <RefreshCw className="w-4 h-4 mr-2" />
                         {isLoading ? "Generating..." : "Regenerate Teams"}
                     </Button>
-
-                    <div className="grid md:grid-cols-2 gap-1">
-                        <div className="border p-4 rounded-lg">
-                            <h3 className="font-bold mb-2">
-                                Team 1 ({team1.length} players)
-                            </h3>
-                            {team1.map((player) => (
-                                <div
-                                    key={player.userId}
-                                    className="flex justify-between items-center bg-white dark:bg-slate-900 p-2 mb-2 rounded shadow"
-                                >
-                                    <span className="text-sm">
-                                        {player.name} - {player.position}
-                                    </span>
-                                    <Button
-                                        size="sm"
-                                        variant="secondary"
-                                        onClick={() =>
-                                            movePlayer(player.userId, 1, 2)
-                                        }
-                                    >
-                                        Move to Team 2
-                                    </Button>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="border p-4 rounded-lg">
-                            <h3 className="font-bold mb-2">
-                                Team 2 ({team2.length} players)
-                            </h3>
-                            {team2.map((player) => (
-                                <div
-                                    key={player.userId}
-                                    className="flex justify-between items-center bg-white dark:bg-slate-900 p-2 mb-2 rounded shadow"
-                                >
-                                    <span className="text-sm">
-                                        {player.name} - {player.position}
-                                    </span>
-                                    <Button
-                                        size="sm"
-                                        variant="secondary"
-                                        onClick={() =>
-                                            movePlayer(player.userId, 2, 1)
-                                        }
-                                    >
-                                        Move to Team 1
-                                    </Button>
-                                </div>
-                            ))}
-                        </div>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <TeamList
+                            teamNumber={1}
+                            players={filteredTeam1}
+                            onMovePlayer={movePlayer}
+                            isMoving={isMoving}
+                        />
+                        <TeamList
+                            teamNumber={2}
+                            players={filteredTeam2}
+                            onMovePlayer={movePlayer}
+                            isMoving={isMoving}
+                        />
                     </div>
                 </div>
             </DialogContent>

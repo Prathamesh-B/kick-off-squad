@@ -11,7 +11,9 @@ import Pagination from "@/components/Pagination";
 const EventsSection = ({ type }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const { data, error, mutate } = useSWR(
-        `/api/events/${type}?page=${currentPage}&limit=6`
+        `/api/events/${type}?page=${currentPage}&limit=6`, {
+            refreshInterval: 10000,
+        }
     );
 
     useEffect(() => {

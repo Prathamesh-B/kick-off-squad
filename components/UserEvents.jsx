@@ -157,9 +157,11 @@ export default function UserEvents({ userId }) {
                                                 <TeamManager
                                                     event={event}
                                                     isOpen={showTeams[event.id]}
-                                                    onClose={() =>
-                                                        toggleTeams(event.id)
-                                                    }
+                                                    onClose={() => {
+                                                        toggleTeams(event.id);
+                                                        mutate();
+                                                    }}
+                                                    onTeamsUpdate={() => {}}
                                                 />
                                             )}
                                         </>

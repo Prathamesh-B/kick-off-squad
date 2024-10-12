@@ -190,6 +190,8 @@ export default function CreateEventForm({ userId }) {
                                     value={formData.name}
                                     onChange={handleChange}
                                     placeholder="e.g. Saturday League Match"
+                                    maxLength={50}
+                                    required
                                 />
                             </div>
                             <div className="space-y-2">
@@ -201,6 +203,7 @@ export default function CreateEventForm({ userId }) {
                                         type="date"
                                         value={formData.date}
                                         onChange={handleChange}
+                                        required
                                     />
                                     <Button
                                         className="ml-2"
@@ -228,6 +231,7 @@ export default function CreateEventForm({ userId }) {
                                         type="time"
                                         value={formData.time}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </div>
                             </div>
@@ -240,6 +244,8 @@ export default function CreateEventForm({ userId }) {
                                         value={formData.location}
                                         onChange={handleChange}
                                         placeholder="e.g. MIT Football Ground"
+                                        maxLength={100}
+                                        required
                                     />
                                 </div>
                             </div>
@@ -281,6 +287,9 @@ export default function CreateEventForm({ userId }) {
                                         value={formData.maxPlayers}
                                         onChange={handleChange}
                                         placeholder="e.g. 10, 12"
+                                        min={1}
+                                        max={24}
+                                        required
                                     />
                                     <Button
                                         variant="outline"
