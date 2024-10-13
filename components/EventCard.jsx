@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import EventInfoPopover from "@/components/EventInfoPopover";
 import TeamPlayersPopover from "@/components/TeamPlayersPopover";
-import { Calendar, MapPin, UserRound } from "lucide-react";
+import { Calendar, MapPin, UserRound, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { extractAmount } from "@/lib/extractAmount";
 import { formatDateTime } from "@/lib/formatDateTime";
@@ -25,7 +25,6 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 
-
 export default function EventCard({ event, isPast, onRegistrationUpdate }) {
     const { data: session } = useSession();
     const [isLoading, setIsLoading] = useState(false);
@@ -36,6 +35,38 @@ export default function EventCard({ event, isPast, onRegistrationUpdate }) {
     );
 
     const amount = extractAmount(event.description);
+
+    const generateShareableLink = (event) => {
+        const baseUrl =
+            typeof window !== "undefined" ? window.location.origin : "";
+        return `${baseUrl}/events/${event.id}`;
+    };
+
+    const handleShare = () => {
+        const shareableLink = generateShareableLink(event);
+        const shareText = `Join me for ${event.name} on ${formatDateTime(
+            event.dateTime
+        )} at ${event.location}. Register here: ${shareableLink}`;
+
+        if (navigator.share) {
+            navigator
+                .share({
+                    title: event.name,
+                    text: shareText,
+                    url: shareableLink,
+                })
+                .catch((error) => console.log("Error sharing", error));
+        } else {
+            navigator.clipboard.writeText(shareText).then(
+                () => {
+                    toast.success("Event details copied to clipboard!");
+                },
+                (err) => {
+                    console.error("Could not copy text: ", err);
+                }
+            );
+        }
+    };
 
     const handlePaymentAndRegistration = async () => {
         setShowPaymentDialog(false);
@@ -111,7 +142,12 @@ export default function EventCard({ event, isPast, onRegistrationUpdate }) {
         <>
             <Card key={event.id}>
                 <CardHeader>
-                    <CardTitle>{event.name}</CardTitle>
+                    <CardTitle>
+                        <span className="flex">{event.name} <Share2
+                            onClick={handleShare}
+                            className="h-4 w-4 ml-1 pt-0.5 hover:cursor-pointer"
+                        /></span>                        
+                    </CardTitle>
                     <CardDescription>
                         {event.description || (isPast ? "Past event" : "")}
                     </CardDescription>
@@ -138,14 +174,20 @@ export default function EventCard({ event, isPast, onRegistrationUpdate }) {
                         />
                     </div>
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="flex justify-between">
                     {isPast ? (
                         <>
                             {event.result ? (
                                 <div className="w-full text-center">
                                     <p className="text-lg">
                                         <span>Final Score: </span>
-                                        <strong>{event.result.team1Score}</strong> - <strong>{event.result.team2Score}</strong>
+                                        <strong>
+                                            {event.result.team1Score}
+                                        </strong>{" "}
+                                        -{" "}
+                                        <strong>
+                                            {event.result.team2Score}
+                                        </strong>
                                     </p>
                                 </div>
                             ) : (
@@ -155,29 +197,32 @@ export default function EventCard({ event, isPast, onRegistrationUpdate }) {
                             )}
                         </>
                     ) : (
-                        <Button
-                            className="w-full"
-                            onClick={handleRegistrationClick}
-                            disabled={
-                                isLoading ||
-                                (!isUserRegistered &&
-                                    event.registrations.length >=
-                                        event.maxPlayers)
-                            }
-                            variant={
-                                isUserRegistered ? "destructive" : "default"
-                            }
-                        >
-                            {isLoading
-                                ? "Processing..."
-                                : isUserRegistered
-                                ? "Unregister"
-                                : event.registrations.length >= event.maxPlayers
-                                ? "Event Full"
-                                : amount
-                                ? `Register (₹${amount})`
-                                : "Register"}
-                        </Button>
+                        <>
+                            <Button
+                                className="flex-grow mr-2"
+                                onClick={handleRegistrationClick}
+                                disabled={
+                                    isLoading ||
+                                    (!isUserRegistered &&
+                                        event.registrations.length >=
+                                            event.maxPlayers)
+                                }
+                                variant={
+                                    isUserRegistered ? "destructive" : "default"
+                                }
+                            >
+                                {isLoading
+                                    ? "Processing..."
+                                    : isUserRegistered
+                                    ? "Unregister"
+                                    : event.registrations.length >=
+                                      event.maxPlayers
+                                    ? "Event Full"
+                                    : amount
+                                    ? `Register (₹${amount})`
+                                    : "Register"}
+                            </Button>
+                        </>
                     )}
                     <TeamPlayersPopover registrations={event.registrations} />
                 </CardFooter>
