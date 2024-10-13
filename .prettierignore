@@ -1,0 +1,17 @@
+# Ignore media files
+*.png
+*.jpeg
+*.mp4
+*.mp3
+*.vtt
+*.ico
+
+# Ignore git-related files
+.gitignore
+.gitkeep
+
+# Ignore this ignore file itself
+.prettierignore
+
+# Ignore components/ui directory and its contents
+components/ui/**

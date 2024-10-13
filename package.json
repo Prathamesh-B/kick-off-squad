@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "format": "prettier \"{app,components}/**/*.{js,jsx,ts,tsx,css,md,json}\" --write --log-level warn"
   },
   "dependencies": {
     "@prisma/client": "^5.19.1",
@@ -39,6 +40,8 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
     "postcss": "^8",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.8",
     "tailwindcss": "^3.4.1"
   }
 }

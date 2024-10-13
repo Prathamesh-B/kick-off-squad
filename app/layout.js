@@ -4,7 +4,7 @@ import "./globals.css";
 import { SessionWrapper } from "@/components/auth/SessionWrapper";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SWRProvider } from "@/components/SWRProvider";
-import { Toaster } from 'sonner';
+import { Toaster } from "sonner";
 
 export const metadata = {
   title: "Kick-Off Squad",
