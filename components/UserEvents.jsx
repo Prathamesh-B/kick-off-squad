@@ -39,15 +39,6 @@ export default function UserEvents({ userId }) {
         setEditingEvent(event);
     };
 
-    const handleEventUpdate = (updatedEvent) => {
-        mutate(
-            data.events.map((event) =>
-                event.id === updatedEvent.id ? updatedEvent : event
-            ),
-            false
-        );
-    };
-
     const handleDelete = async (eventId) => {
         if (!confirm("Are you sure you want to delete this event?")) return;
 
@@ -67,9 +58,9 @@ export default function UserEvents({ userId }) {
             const optimisticEvents = data.events.filter(
                 (event) => event.id !== eventId
             );
-            mutate({ ...data, events: optimisticEvents }, false);
+            mutate()({ ...data, events: optimisticEvents }, false);
         } catch (error) {
-            mutate();
+            mutate()();
             console.error("Error deleting event:", error);
             toast.error("Failed to delete event");
         }
@@ -159,7 +150,7 @@ export default function UserEvents({ userId }) {
                                                     isOpen={showTeams[event.id]}
                                                     onClose={() => {
                                                         toggleTeams(event.id);
-                                                        mutate();
+                                                        mutate()();
                                                     }}
                                                     onTeamsUpdate={() => {}}
                                                 />
@@ -201,7 +192,7 @@ export default function UserEvents({ userId }) {
                                             }
                                             onTeamsUpdate={async () => {
                                                 try {
-                                                    await mutate();
+                                                    await mutate()();
                                                 } catch (error) {
                                                     console.error(
                                                         "Error updating teams:",
@@ -232,7 +223,7 @@ export default function UserEvents({ userId }) {
                     event={editingEvent}
                     isOpen={!!editingEvent}
                     onClose={() => setEditingEvent(null)}
-                    onEventUpdate={handleEventUpdate}
+                    onEventUpdate={() => mutate()}
                 />
             )}
             {declaringResult && (
