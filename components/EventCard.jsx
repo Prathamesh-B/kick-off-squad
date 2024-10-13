@@ -44,9 +44,9 @@ export default function EventCard({ event, isPast, onRegistrationUpdate }) {
 
     const handleShare = () => {
         const shareableLink = generateShareableLink(event);
-        const shareText = `Join me for ${event.name} on ${formatDateTime(
+        const shareText = `Register for ${event.name} on ${formatDateTime(
             event.dateTime
-        )} at ${event.location}. Register here: ${shareableLink}`;
+        )} at ${event.location}`;
 
         if (navigator.share) {
             navigator

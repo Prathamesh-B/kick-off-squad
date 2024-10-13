@@ -31,7 +31,7 @@ export default function EventDetails({ id }) {
     const isPast = new Date(event.dateTime) < new Date();
 
     return (
-        <main className="flex-1 py-6 px-4 md:px-6">
+        <main className="flex-1 py-6 px-4 md:px-6 min-h-screen">
             <div className="max-w-4xl mx-auto space-y-8">
                 <EventCard
                     event={event}

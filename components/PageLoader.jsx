@@ -7,6 +7,36 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function PageLoader({ type = "default" }) {
+    if (type === "event") {
+        return (
+            <div className="max-w-2xl mx-auto space-y-8 py-6 px-4">
+                <Card>
+                    <CardHeader>
+                        <Skeleton className="h-6 w-2/3 mb-2" />
+                        <Skeleton className="h-4 w-1/3" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-2">
+                            {[1, 2, 3].map((j) => (
+                                <div
+                                    key={j}
+                                    className="flex items-center space-x-2"
+                                >
+                                    <Skeleton className="h-4 w-4" />
+                                    <Skeleton className="h-4 w-3/4" />
+                                </div>
+                            ))}
+                        </div>
+                    </CardContent>
+                    <CardFooter className="flex justify-between">
+                        <Skeleton className="h-10 w-3/4" />
+                        <Skeleton className="h-10 w-10 rounded-md" />
+                    </CardFooter>
+                </Card>
+            </div>
+        );
+    }
+
     if (type === "events") {
         return (
             <div className="grid gap-6 md:grid-cols-2">
@@ -31,7 +61,7 @@ export function PageLoader({ type = "default" }) {
                         </CardContent>
                         <CardFooter className="flex justify-between">
                             <Skeleton className="h-10 w-3/4" />
-                            <Skeleton className="h-10 w-10 rounded-full" />
+                            <Skeleton className="h-10 w-10 rounded-md" />
                         </CardFooter>
                     </Card>
                 ))}
