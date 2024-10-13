@@ -136,7 +136,6 @@ export default function UserEvents({ userId }) {
                             toggleTeams(event.id);
                             mutate()();
                           }}
-                          onTeamsUpdate={() => {}}
                         />
                       )}
                     </>
@@ -169,14 +168,9 @@ export default function UserEvents({ userId }) {
                     <TeamManager
                       event={event}
                       isOpen={showTeams[event.id]}
-                      onClose={() => toggleTeams(event.id)}
-                      onTeamsUpdate={async () => {
-                        try {
-                          await mutate()();
-                        } catch (error) {
-                          console.error("Error updating teams:", error);
-                          toast.error("Failed to update teams");
-                        }
+                      onClose={() => {
+                        toggleTeams(event.id);
+                        mutate();
                       }}
                     />
                   </div>
@@ -197,8 +191,10 @@ export default function UserEvents({ userId }) {
         <EditEventForm
           event={editingEvent}
           isOpen={!!editingEvent}
-          onClose={() => setEditingEvent(null)}
-          onEventUpdate={() => mutate()}
+          onClose={() => {
+            setEditingEvent(null);
+            mutate();
+          }}
         />
       )}
       {declaringResult && (

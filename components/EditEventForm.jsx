@@ -26,7 +26,6 @@ export default function EditEventForm({
   event,
   isOpen,
   onClose,
-  onEventUpdate,
 }) {
   const [formData, setFormData] = useState({
     name: event.name,
@@ -75,7 +74,6 @@ export default function EditEventForm({
       }
 
       const updatedEvent = await response.json();
-      onEventUpdate(updatedEvent);
       onClose();
       toast.success("Event updated successfully");
     } catch (error) {

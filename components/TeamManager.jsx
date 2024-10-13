@@ -183,7 +183,7 @@ export default function TeamManager({ event, isOpen, onClose, onTeamsUpdate }) {
   );
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={isOpen} onOpenChange={() => onClose()}>
       <DialogContent className="max-h-screen max-w-4xl overflow-auto p-4 sm:p-6 lg:p-8">
         <DialogHeader>
           <DialogTitle>Manage Teams - {event.name}</DialogTitle>
